@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  kaggle:
+    image: "$DOCKER_DEVELOPMENT_IMAGE"
+    ports:
+      - "8787:8787"
+      - "3838:3838"
+    environment:
+      DISABLE_AUTH: "true"
+    volumes:
+      - type: "bind"
+        source: "/Users/rahul/github/github.com/kaggle-lead" 
+        target: "/home/rstudio"
+      - type: "bind"
+        source: "/Users/rahul/github/github.com/renv-cache/"
+        target: "/renv/cache"

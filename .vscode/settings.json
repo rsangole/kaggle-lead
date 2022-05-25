@@ -1,0 +1,32 @@
+{
+	"r.rterm.linux": "/usr/local/bin/radian",
+	"r.plot.useHttpgd": true,
+    // VSCode setup
+    "editor.formatOnPaste": true, // recommended
+    "editor.formatOnType": true, // recommended
+    "diffEditor.ignoreTrimWhitespace": false,
+    "files.autoSave": "off",
+    // R setup
+    "[r]": {
+        "editor.defaultFormatter": "REditorSupport.r",
+        "editor.formatOnSave": true
+    },
+    "[rmd]": {
+        "editor.defaultFormatter": "Ikuyadeu.r",
+        "editor.formatOnSave": true
+    },
+    "files.associations": { // required
+        "*.rmd": "markdown",
+        "*.Rmd": "rmd"
+    },
+    "r.sessionWatcher": true, // default
+    "r.bracketedPaste": true, // required
+    "r.lsp.debug": true, // required
+    "r.alwaysUseActiveTerminal": false, // required
+    "r.rtermSendDelay": 0,
+    "r.libPaths": ["/home/rstudio/renv/library/R-4.2/x86_64-pc-linux-gnu"],
+    "path-autocomplete.pathMappings": {
+        "/": "/",
+        "./": "${folder}"
+    }
+}

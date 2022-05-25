@@ -1,0 +1,526 @@
+{
+  "R": {
+    "Version": "4.2.0",
+    "Repositories": [
+      {
+        "Name": "RSPM",
+        "URL": "https://packagemanager.rstudio.com/all/latest"
+      }
+    ]
+  },
+  "Packages": {
+    "DBI": {
+      "Package": "DBI",
+      "Version": "1.1.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "DT": {
+      "Package": "DT",
+      "Version": "0.20",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "DataExplorer": {
+      "Package": "DataExplorer",
+      "Version": "0.8.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "FactoMineR": {
+      "Package": "FactoMineR",
+      "Version": "2.4",
+      "Source": "Repository"
+    },
+    "RCurl": {
+      "Package": "RCurl",
+      "Version": "1.98-1.5",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "RPostgres": {
+      "Package": "RPostgres",
+      "Version": "1.4.3",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "RcppParallel": {
+      "Package": "RcppParallel",
+      "Version": "5.1.4",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "arrow": {
+      "Package": "arrow",
+      "Version": "6.0.0.2",
+      "Source": "Repository"
+    },
+    "assertive": {
+      "Package": "assertive",
+      "Version": "0.3-6",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "assertr": {
+      "Package": "assertr",
+      "Version": "2.8",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "aws.s3": {
+      "Package": "aws.s3",
+      "Version": "0.3.21",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "billboarder": {
+      "Package": "billboarder",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "bit64": {
+      "Package": "bit64",
+      "Version": "4.0.5",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "blastula": {
+      "Package": "blastula",
+      "Version": "0.3.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "bookdown": {
+      "Package": "bookdown",
+      "Version": "0.24",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "bs4Dash": {
+      "Package": "bs4Dash",
+      "Version": "2.0.3",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "bsplus": {
+      "Package": "bsplus",
+      "Version": "0.1.3",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "cli": {
+      "Package": "cli",
+      "Version": "3.1.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "clipr": {
+      "Package": "clipr",
+      "Version": "0.7.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "clustermq": {
+      "Package": "clustermq",
+      "Version": "0.8.95.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "config": {
+      "Package": "config",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "curl": {
+      "Package": "curl",
+      "Version": "4.3.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "data.table": {
+      "Package": "data.table",
+      "Version": "1.14.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "dbplyr": {
+      "Package": "dbplyr",
+      "Version": "2.1.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "devtools": {
+      "Package": "devtools",
+      "Version": "2.4.3",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "downloadthis": {
+      "Package": "downloadthis",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "factoextra": {
+      "Package": "factoextra",
+      "Version": "1.0.7",
+      "Source": "Repository"
+    },
+    "flexdashboard": {
+      "Package": "flexdashboard",
+      "Version": "0.5.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "furrr": {
+      "Package": "furrr",
+      "Version": "0.2.3",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "future": {
+      "Package": "future",
+      "Version": "1.23.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "future.apply": {
+      "Package": "future.apply",
+      "Version": "1.8.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "future.callr": {
+      "Package": "future.callr",
+      "Version": "0.7.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "getPass": {
+      "Package": "getPass",
+      "Version": "0.2-2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "ggplot2": {
+      "Package": "ggplot2",
+      "Version": "3.3.5",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "golem": {
+      "Package": "golem",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "gt": {
+      "Package": "gt",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "here": {
+      "Package": "here",
+      "Version": "1.0.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "httpgd": {
+      "Package": "httpgd",
+      "Version": "1.2.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "httr": {
+      "Package": "httr",
+      "Version": "1.4.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "janitor": {
+      "Package": "janitor",
+      "Version": "2.1.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "kableExtra": {
+      "Package": "kableExtra",
+      "Version": "1.3.4",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "languageserver": {
+      "Package": "languageserver",
+      "Version": "0.3.12",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "lattice": {
+      "Package": "lattice",
+      "Version": "0.20-45",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "lintr": {
+      "Package": "lintr",
+      "Version": "2.0.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "listviewer": {
+      "Package": "listviewer",
+      "Version": "3.0.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "loggit": {
+      "Package": "loggit",
+      "Version": "2.1.1",
+      "Source": "Repository"
+    },
+    "markdown": {
+      "Package": "markdown",
+      "Version": "1.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "microbenchmark": {
+      "Package": "microbenchmark",
+      "Version": "1.4.9",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "miniUI": {
+      "Package": "miniUI",
+      "Version": "0.1.1.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "packrat": {
+      "Package": "packrat",
+      "Version": "0.7.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "pkgdown": {
+      "Package": "pkgdown",
+      "Version": "2.0.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "plotly": {
+      "Package": "plotly",
+      "Version": "4.10.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "pool": {
+      "Package": "pool",
+      "Version": "0.1.6",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "profvis": {
+      "Package": "profvis",
+      "Version": "0.3.7",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "progressr": {
+      "Package": "progressr",
+      "Version": "0.10.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "qs": {
+      "Package": "qs",
+      "Version": "0.25.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "reactable": {
+      "Package": "reactable",
+      "Version": "0.2.3",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "reactablefmtr": {
+      "Package": "reactablefmtr",
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "renv": {
+      "Package": "renv",
+      "Version": "0.14.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "30e5eba91b67f7f4d75d31de14bbfbdc",
+      "Requirements": []
+    },
+    "reprex": {
+      "Package": "reprex",
+      "Version": "2.0.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "rpivotTable": {
+      "Package": "rpivotTable",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "rsconnect": {
+      "Package": "rsconnect",
+      "Version": "0.8.25",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "servr": {
+      "Package": "servr",
+      "Version": "0.24",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shiny": {
+      "Package": "shiny",
+      "Version": "1.7.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinyBS": {
+      "Package": "shinyBS",
+      "Version": "0.61",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinyEffects": {
+      "Package": "shinyEffects",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinyFeedback": {
+      "Package": "shinyFeedback",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinyWidgets": {
+      "Package": "shinyWidgets",
+      "Version": "0.6.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinycssloaders": {
+      "Package": "shinycssloaders",
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinydashboard": {
+      "Package": "shinydashboard",
+      "Version": "0.7.2",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinydashboardPlus": {
+      "Package": "shinydashboardPlus",
+      "Version": "2.0.3",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinyjqui": {
+      "Package": "shinyjqui",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinyjs": {
+      "Package": "shinyjs",
+      "Version": "2.0.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "shinythemes": {
+      "Package": "shinythemes",
+      "Version": "1.2.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "showtext": {
+      "Package": "showtext",
+      "Version": "0.9-4",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "skimr": {
+      "Package": "skimr",
+      "Version": "2.1.3",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "targets": {
+      "Package": "targets",
+      "Version": "0.9.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "testthat": {
+      "Package": "testthat",
+      "Version": "3.1.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "tictoc": {
+      "Package": "tictoc",
+      "Version": "1.0.1",
+      "Source": "Repository"
+    },
+    "tidyverse": {
+      "Package": "tidyverse",
+      "Version": "1.3.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "timevis": {
+      "Package": "timevis",
+      "Version": "2.0.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "tippy": {
+      "Package": "tippy",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "tsibble": {
+      "Package": "tsibble",
+      "Version": "1.1.1",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "txtplot": {
+      "Package": "txtplot",
+      "Version": "1.0-4",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "waiter": {
+      "Package": "waiter",
+      "Version": "0.2.4",
+      "Source": "Repository",
+      "Requirements": []
+    },
+    "zeallot": {
+      "Package": "zeallot",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Requirements": []
+    }
+  }
+}
