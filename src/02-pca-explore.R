@@ -6,12 +6,22 @@ library(plotly)
 ds <- open_dataset("data/train")
 
 pca_tbl <- ds %>%
-        select(building_id, site_id, anomaly)
+        # %>%
+        select(-year) %>%
+        select(-contains("gte")) %>%
+        # select(building_id, site_id, anomaly, primary_use) %>%
+        collect() %>%
+        mutate(
+                building_id = sprintf("Bld-%d", building_id),
+                site_id = sprintf("Site-%d", site_id),
+                anomaly = sprintf("A%d", anomaly)
+        )
+pca_tbl
 
 scaled_tbl <- ds %>%
         select(-building_id, -anomaly, -site_id) %>%
-        select(-year) %>% 
-        select(-contains('gte')) %>% 
+        select(-year) %>%
+        select(-contains("gte")) %>%
         collect() %>%
         select_if(is.numeric) %>%
         purrr::map_df(~ scale(.x))
@@ -46,7 +56,7 @@ pr.var <- data.table(
 xyplot(var_prop + csum_var_prop ~ comp, pr.var,
         type = "b",
         auto.key = TRUE,
-        panel = function(x,y,...) {
+        panel = function(x, y, ...) {
                 panel.xyplot(x, y, ...)
                 panel.abline(h = 0.8, col = "red", lty = 2)
         }
@@ -79,7 +89,11 @@ barchart(var ~ PC2 + PC3, E_dat,
 )
 
 
-plot_varplot <- function(G_dat, E_dat, .x, .y, .color) {
+plot_varplot <- function(G_dat, E_dat, .x, .y, sample_fr, .color_by, .primary_use) {
+        plot_dat <- G_dat %>%
+                dplyr::filter(primary_use == .primary_use) %>%
+                sample_frac(sample_fr)
+
         plot_ly() %>%
                 add_segments(
                         x = 0,
@@ -95,23 +109,112 @@ plot_varplot <- function(G_dat, E_dat, .x, .y, .color) {
                         )
                 ) %>%
                 add_markers(
-                        data = G_dat,
+                        data = plot_dat,
                         x = ~ get(.x),
                         y = ~ get(.y),
-                        color = ~ get(.color),
+                        color = ~ get(.color_by),
                         hoverinfo = "text",
-#                         hovertemplate = ~ glue::glue(
-#                                 "genre_name : {genre_name}
-#       country_of_origin : {country_of_origin}
-#       group_name_adjusted : {group_name_adjusted}
-#       content_provider_name : {content_provider_name}
-#       inapp_billings : {scales::label_number_si(accuracy = 0.1)(inapp_billings)}
-#       app_billings : {scales::label_number_si(accuracy = 0.1)(app_billings)}
-#       subs_billings : {scales::label_number_si(accuracy = 0.1)(subs_billings)}
-#       dld_uiredld_update_users : {scales::label_number_si(accuracy = 0.1)(dld_uiredld_update_users)}
-#       downloads : {scales::label_number_si(accuracy = 0.1)(downloads)}
-#       redownloads : {scales::label_number_si(accuracy = 0.1)(redownloads)}"
-#                         )
+                        hovertemplate = ~ glue::glue(
+                                "building_id : {building_id}
+                              site_id:{
+                                      site_id
+                              }
+                              anomaly:{
+                                      anomaly
+                              }
+                              primary_use:{
+                                      primary_use
+                              }
+                              wind_speed:{
+                                      wind_speed
+                              }
+                              cloud_coverage:{
+                                      cloud_coverage
+                              }
+                              floor_count:{
+                                      floor_count
+                              }
+                              sea_level_pressure:{
+                                      sea_level_pressure
+                              }
+                              air_temperature_min_lag7:{air_temperature_min_lag7}
+                              "
+                        )
+                ) %>%
+                add_text(
+                        x = ~ get(.x) * 100 / 2,
+                        y = ~ get(.y) * 100 / 2,
+                        text = ~var,
+                        data = E_dat,
+                        inherit = FALSE
+                ) %>%
+                layout(title = list(text = .primary_use))
+}
+
+# plot_varplot(G_dat, E_dat, "PC1", "PC2", 0.005, "anomaly", "education")
+plot_varplot(G_dat, E_dat, "PC1", "PC2", 0.005, "site_id", "education")
+plot_varplot(G_dat, E_dat, "PC1", "PC2", 0.005, "site_id", "healthcare")
+# plot_varplot(G_dat, E_dat, "PC1", "PC2", 0.005, "anomaly", "healthcare")
+# plot_varplot(G_dat, E_dat, "PC1", "PC2", 0.01, "anomaly", "parking")
+# xyplot(
+#         PC1 ~ PC2,
+#         G_dat,
+#         pch = "."
+# )
+
+
+
+plot_varplot <- function(G_dat, E_dat, .x, .y, sample_N, .color_by) {
+        plot_dat <- G_dat %>%
+                group_by(site_id) %>%
+                sample_n(sample_N)
+
+        plot_ly() %>%
+                add_segments(
+                        x = 0,
+                        y = 0,
+                        xend = ~ get(.x) * 100 / 2,
+                        yend = ~ get(.y) * 100 / 2,
+                        data = E_dat,
+                        inherit = FALSE,
+                        hoverinfo = "text",
+                        opacity = 0.20,
+                        hovertemplate = ~ glue::glue(
+                                "{var}"
+                        )
+                ) %>%
+                add_markers(
+                        data = plot_dat,
+                        x = ~ get(.x),
+                        y = ~ get(.y),
+                        color = ~ get(.color_by),
+                        hoverinfo = "text",
+                        hovertemplate = ~ glue::glue(
+                                "building_id : {building_id}
+                              site_id:{
+                                      site_id
+                              }
+                              anomaly:{
+                                      anomaly
+                              }
+                              primary_use:{
+                                      primary_use
+                              }
+                              wind_speed:{
+                                      wind_speed
+                              }
+                              cloud_coverage:{
+                                      cloud_coverage
+                              }
+                              floor_count:{
+                                      floor_count
+                              }
+                              sea_level_pressure:{
+                                      sea_level_pressure
+                              }
+                              air_temperature_min_lag7:{air_temperature_min_lag7}
+                              "
+                        )
                 ) %>%
                 add_text(
                         x = ~ get(.x) * 100 / 2,
@@ -120,12 +223,15 @@ plot_varplot <- function(G_dat, E_dat, .x, .y, .color) {
                         data = E_dat,
                         inherit = FALSE
                 )
+        # layout(title = list(text = .primary_use))
 }
+plot_varplot(G_dat, E_dat, "PC1", "PC2", 55, "site_id")
 
-plot_varplot(G_dat, E_dat, "PC1", "PC2", "is_holiday")
 
-xyplot(
-	PC1 ~ PC2,
-	G_dat,
-	pch = '.'
-)
+plot_ly(
+        x = ~wind_speed,
+        y = ~dew_temperature,
+        dat = G_dat %>% group_by(site_id) %>% sample_n(100),
+        color = ~primary_use
+) %>%
+        add_markers()

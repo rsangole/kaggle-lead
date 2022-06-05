@@ -1,5 +1,5 @@
 data/data-raw
-data/train
+data/arrow
 .DS_Store
 .config/
 .local/
