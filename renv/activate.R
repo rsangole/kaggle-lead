@@ -2,7 +2,7 @@
 local({
 
   # the requested version of renv
-  version <- "0.15.4"
+  version <- "0.15.3"
 
   # the project directory
   project <- getwd()
@@ -378,13 +378,7 @@ local({
     bin <- R.home("bin")
     exe <- if (Sys.info()[["sysname"]] == "Windows") "R.exe" else "R"
     r <- file.path(bin, exe)
-  
-    args <- c(
-      "--vanilla", "CMD", "INSTALL", "--no-multiarch",
-      "-l", shQuote(path.expand(library)),
-      shQuote(path.expand(tarball))
-    )
-  
+    args <- c("--vanilla", "CMD", "INSTALL", "--no-multiarch", "-l", shQuote(library), shQuote(tarball))
     output <- system2(r, args, stdout = TRUE, stderr = TRUE)
     message("Done!")
   
@@ -759,8 +753,7 @@ local({
   }
   
   renv_bootstrap_user_dir <- function() {
-    dir <- renv_bootstrap_user_dir_impl()
-    path.expand(chartr("\\", "/", dir))
+    chartr("\\", "/", renv_bootstrap_user_dir_impl())
   }
   
   renv_bootstrap_user_dir_impl <- function() {

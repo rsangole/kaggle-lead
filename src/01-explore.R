@@ -7,6 +7,7 @@ library(lattice)
 # library(DataExplorer)
 
 train <- read_csv_arrow("data/data-raw/train_features.csv")
+ds <- open_dataset("data/train")
 train
 
 introduce(train)
@@ -47,7 +48,6 @@ sample_tbl <- train %>%
 sample_tbl
 
 
-ds <- open_dataset("data/train")
 
 ds %>%
         filter(
@@ -92,3 +92,51 @@ xyplot(meter_reading ~ timestamp | building_id,
         type = "o",
         scales = "free"
 )
+
+
+xyplot(meter_reading ~ timestamp | building_id,
+        groups = anomaly,
+        plotdat %>% filter(primary_use == "Education") %>% filter(timestamp > "2016-03-01", timestamp < "2016-04-01"),
+        auto.key = TRUE,
+        pch = 16,
+        type = "o",
+        scales = "free"
+)
+
+xyplot(meter_reading ~ timestamp | facet ,
+        groups = anomaly,
+        train %>% 
+                filter(primary_use == "Entertainment/public assembly") %>% 
+                filter(timestamp > "2016-03-01", timestamp < "2016-04-01") %>% 
+                mutate(facet = paste0("B",building_id," S", site_id)),
+        auto.key = TRUE,
+        pch = 16,
+        type = "o",
+        scales = "free"
+)
+
+train %>%
+        filter(primary_use == "Entertainment/public assembly") %>%
+        filter(timestamp > "2016-03-01", timestamp < "2016-04-01") %>%
+        mutate(week = lubridate::week(timestamp)) %>%
+        densityplot(~ meter_reading | building_id, data = ., scales = "free", groups = week,
+        plot.points = FALSE)
+
+
+train %>%
+        filter(primary_use == "Entertainment/public assembly") %>%
+        filter(timestamp > "2016-03-01", timestamp < "2016-04-01") %>%
+        mutate(week = lubridate::week(timestamp)) %>%
+        densityplot(~ meter_reading | building_id,
+                data = ., scales = "free", groups = week,
+                plot.points = FALSE
+        )
+
+train %>%
+        filter(primary_use == "Entertainment/public assembly") %>%
+        # filter(timestamp > "2016-03-01", timestamp < "2016-04-01") %>%
+        mutate(month = lubridate::month(timestamp)) %>%
+        densityplot(~ meter_reading | building_id,
+                data = ., scales = "free", groups = month,
+                plot.points = FALSE
+        )
