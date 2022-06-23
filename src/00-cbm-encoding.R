@@ -28,7 +28,7 @@ beta_encoder_transform <- function(dat, be, stat_type, N_min = 1) {
                         )
                 )
 
-        N_prior <- pmax(N_min - out$count)
+        N_prior <- pmax(N_min - out$count, 0)
 
         alpha_prior <- be$prior_mean * N_prior
         beta_prior <- (1 - be$prior_mean) * N_prior
@@ -53,12 +53,14 @@ mtc_tbl <- as_tibble(mtcars) %>%
         )
 mtc_tbl
 
+NMIN <- 4
+
 be <- beta_encoder_fit(mtc_tbl, "gear", "mpg")
-mtc_tbl[["gear_mean"]] <- beta_encoder_transform(mtc_tbl, be, "mean", 10)
+mtc_tbl[["gear_mean"]] <- beta_encoder_transform(mtc_tbl, be, "mean", NMIN)
 be <- beta_encoder_fit(mtc_tbl, "cyl", "mpg")
-mtc_tbl[["cyl_mean"]] <- beta_encoder_transform(mtc_tbl, be, "mean", 10)
+mtc_tbl[["cyl_mean"]] <- beta_encoder_transform(mtc_tbl, be, "mean", NMIN)
 be <- beta_encoder_fit(mtc_tbl, "am", "mpg")
-mtc_tbl[["am_mean"]] <- beta_encoder_transform(mtc_tbl, be, "mean", 10)
+mtc_tbl[["am_mean"]] <- beta_encoder_transform(mtc_tbl, be, "mean", NMIN)
 mtc_tbl
 
 mtc_tbl %>%
