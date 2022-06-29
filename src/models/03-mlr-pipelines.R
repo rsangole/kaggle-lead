@@ -1,5 +1,6 @@
 # box::use(mlr3[...])
 library(mlr3verse)
+library(mlr3extralearners)
 box::use(mlr3learners[...])
 box::use(data.table[...])
 box::use(arrow[...])
