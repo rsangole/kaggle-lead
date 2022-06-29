@@ -1,6 +1,6 @@
 predictor-analysis
 data/data-raw
-data/arrow
+data/arrow*
 .DS_Store
 .config/
 .local/
