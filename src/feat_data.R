@@ -13,7 +13,7 @@ feat_removeNA_add_lags <- function(dat,
                         .value = meter_reading,
                         .period = moving_avg_periods,
                         # align = "right",
-                        .f = AVERAGE,
+                        .f = mean,
                         .partial = TRUE
                 ) |>
                 timetk::tk_augment_lags(
@@ -26,5 +26,22 @@ feat_removeNA_add_lags <- function(dat,
                         .differences = diffs
                 ) |>
                 dplyr::filter(!meter_reading_missing) |>
-                dplyr::select(-meter_reading_missing)
+                dplyr::select(-meter_reading_missing) |>
+                dplyr::ungroup() |>
+                data.table::as.data.table()
+}
+
+#' @export
+feat_cleanup_primary_use <- function(dat) {
+        dat$primary_use <- as.factor(dat$primary_use)
+        levels(dat$primary_use) <- janitor::make_clean_names(levels(dat$primary_use))
+        dat$primary_use <- as.character(dat$primary_use)
+        dat
+}
+
+#' @export
+feat_cleanup_categoricals <- function(dat) {
+        dat[, building_id := as.factor(sprintf("Bld-%d", building_id))]
+        dat[, site_id := as.factor(sprintf("Site-%d", site_id))]
+        dat[, anomaly := as.factor(sprintf("A%d", anomaly))]
 }
