@@ -10,12 +10,17 @@ ds <- open_dataset(here::here("data/arrow"))
 
 ds
 
-plot_ts <- function(puse, sid) {
-        ds |>
+plot_ts <- function(puse, sid, bid = NULL) {
+        dat <- ds |>
                 dplyr::filter(
                         primary_use == puse,
                         site_id == sid
-                ) |>
+                )
+        if (!is.null(bid)) {
+                dat <- dat |>
+                        dplyr::filter(building_id %in% bid)
+        }
+        dat |>
                 dplyr::select(
                         timestamp,
                         meter_reading,
@@ -52,3 +57,4 @@ plot_ts <- function(puse, sid) {
 
 plot_ts("Education", "Site-0")
 plot_ts("Education", "Site-1")
+
