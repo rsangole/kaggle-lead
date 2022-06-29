@@ -46,7 +46,7 @@ dat <- feat_data$feat_removeNA_add_lags(dat)
 # Save to disk
 dat %>%
         group_by(label, primary_use, site_id, building_id) %>%
-        write_dataset(path = here::here("data/arrow/"), format = "parquet")
+        write_dataset(path = here::here("data/arrow-timebasedsampling/"), format = "parquet")
 
 rm(dat)
 gc(1, 1, 1)

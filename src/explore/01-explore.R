@@ -6,16 +6,35 @@ library(plotly)
 library(lattice)
 # library(DataExplorer)
 
-train <- read_csv_arrow("data/data-raw/train_features.csv")
-ds <- open_dataset("data/train")
-train
+ds <- open_dataset("data/arrow")
+ds
 
-introduce(train)
-glimpse(train)
+# introduce(train)
+# glimpse(train)
 # skimr::skim(train)
 
-train %>% count(anomaly)
-train %>% count(building_id)
+# Anomaly %
+ds |>
+        count(anomaly) |>
+        collect() |>
+        adorn_totals() |>
+        adorn_percentages("col") |>
+        adorn_pct_formatting()
+
+# Anomaly by Use
+ds |>
+        select(anomaly, primary_use) |>
+        collect() |>
+        tabyl(anomaly, primary_use) |>
+        adorn_totals()
+ds |>
+        select(anomaly, primary_use) |>
+        collect() |>
+        tabyl(anomaly, primary_use) |>
+        adorn_totals() |>
+        adorn_percentages("col") |>
+        adorn_pct_formatting()
+
 
 train <- train %>%
         mutate(
@@ -103,12 +122,12 @@ xyplot(meter_reading ~ timestamp | building_id,
         scales = "free"
 )
 
-xyplot(meter_reading ~ timestamp | facet ,
+xyplot(meter_reading ~ timestamp | facet,
         groups = anomaly,
-        train %>% 
-                filter(primary_use == "Entertainment/public assembly") %>% 
-                filter(timestamp > "2016-03-01", timestamp < "2016-04-01") %>% 
-                mutate(facet = paste0("B",building_id," S", site_id)),
+        train %>%
+                filter(primary_use == "Entertainment/public assembly") %>%
+                filter(timestamp > "2016-03-01", timestamp < "2016-04-01") %>%
+                mutate(facet = paste0("B", building_id, " S", site_id)),
         auto.key = TRUE,
         pch = 16,
         type = "o",
@@ -119,8 +138,10 @@ train %>%
         filter(primary_use == "Entertainment/public assembly") %>%
         filter(timestamp > "2016-03-01", timestamp < "2016-04-01") %>%
         mutate(week = lubridate::week(timestamp)) %>%
-        densityplot(~ meter_reading | building_id, data = ., scales = "free", groups = week,
-        plot.points = FALSE)
+        densityplot(~ meter_reading | building_id,
+                data = ., scales = "free", groups = week,
+                plot.points = FALSE
+        )
 
 
 train %>%
