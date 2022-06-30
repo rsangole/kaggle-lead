@@ -80,7 +80,7 @@ set_threads(lrn_rf)
 
 lrn_glmnet <- lrn("classif.glmnet", predict_type = "prob")
 
-lrn_xgb <- lrn("classif.xgboost")
+lrn_xgb <- lrn("classif.xgboost", predict_type = "prob")
 set_threads(lrn_xgb)
 
 lrn_lightgbm <- lrn("classif.lightgbm", predict_type = "prob")
@@ -160,18 +160,28 @@ po_pca_temperature %>>%
     po(lrn_xgb) |>
     as_learner() -> lrn_pca_encode_over_xgb
 
+po_pca_temperature %>>%
+    po_encode %>>%
+    po_over %>>%
+    po(lrn_lightgbm) |>
+    as_learner() -> lrn_pca_encode_over_lightgbm
+
 # Benchmarking
 design <- benchmark_grid(
     tasks = task,
     learners = list(
         lrn_pca_encode_over_rf,
-        lrn_pca_encode_over_xgb
+        lrn_pca_encode_under_rf,
+        lrn_pca_over_rf,
+        lrn_over_rf,
+        lrn_pca_encode_over_xgb,
+        lrn_pca_encode_over_lightgbm
     ),
     resamplings = cv3
 )
 design
 bmr <- benchmark(design)
-
+bmr$aggregate(measure)
 
 
 # # TUNING --
