@@ -58,6 +58,7 @@
     // "explorer.confirmDelete": false, // optional
     // "vim.highlightedyank.enable": true,
     "vim.smartRelativeLine": true,
+    "r.lsp.promptToInstall": false,
     // "vsicons.dontShowNewVersionMessage": true,
     // "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 }

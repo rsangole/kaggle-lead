@@ -697,6 +697,12 @@
       "Hash": "2e82e829a1c4a6c5d41921c177051e85",
       "Requirements": []
     },
+    "glmnet": {
+      "Package": "glmnet",
+      "Version": "4.1-4",
+      "Source": "Repository",
+      "Requirements": []
+    },
     "globals": {
       "Package": "globals",
       "Version": "0.15.0",
