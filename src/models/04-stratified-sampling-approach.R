@@ -7,7 +7,12 @@ library(data.table)
 library(arrow)
 library(plotly)
 library(lattice)
-box::use(. / src / plotters)
+# box::use(. / src / plotters)
+
+logger <- lgr::get_logger("mlr3")
+logger$set_threshold("debug")
+tf <- "data/results/stratified-sampling-approach/log.json"
+logger$add_appender(lgr::AppenderJson$new(tf), name = "json")
 
 set.seed(42)
 
@@ -23,7 +28,10 @@ dat <- ds |>
         -"row_id",
         -"timestamp"
     ) |>
-    dplyr::filter(label == "train") |>
+    dplyr::filter(
+        label == "train",
+        meter_reading_missing == FALSE
+    ) |>
     dplyr::collect() |>
     as.data.table()
 dat[]
@@ -69,21 +77,41 @@ cv3
 measure <- list(
     msr("classif.fbeta"),
     msr("classif.auc", predict_sets = "train", id = "auc_train"),
-    msr("classif.auc", id = "auc_test")
+    msr("classif.auc", id = "auc_test"),
+    msr("classif.ppv"),
+    msr("classif.fpr"),
+    msr("time_both")
 )
 measure
 
 # Base Leaners
 
-lrn_rf <- lrn("classif.ranger", num.trees = 50, predict_type = "prob")
+lrn_rf <- lrn(
+    "classif.ranger",
+    num.trees = 50,
+    predict_sets = c("train", "test"),
+    predict_type = "prob"
+)
 set_threads(lrn_rf)
 
-lrn_glmnet <- lrn("classif.glmnet", predict_type = "prob")
+lrn_glmnet <- lrn(
+    "classif.glmnet",
+    predict_sets = c("train", "test"),
+    predict_type = "prob"
+)
 
-lrn_xgb <- lrn("classif.xgboost", predict_type = "prob")
+lrn_xgb <- lrn(
+    "classif.xgboost",
+    predict_sets = c("train", "test"),
+    predict_type = "prob"
+)
 set_threads(lrn_xgb)
 
-lrn_lightgbm <- lrn("classif.lightgbm", predict_type = "prob")
+lrn_lightgbm <- lrn(
+    "classif.lightgbm",
+    predict_type = "prob",
+    predict_sets = c("train", "test")
+)
 set_threads(lrn_lightgbm)
 
 # Pipelines
@@ -138,6 +166,7 @@ po_pca_temperature %>>%
     po_over %>>%
     po(lrn_rf) |>
     as_learner() -> lrn_pca_encode_over_rf
+lrn_pca_encode_over_rf$predict_sets <- c("train", "test")
 
 po_pca_temperature %>>%
     po_encode %>>%
@@ -160,6 +189,12 @@ po_pca_temperature %>>%
     po(lrn_xgb) |>
     as_learner() -> lrn_pca_encode_over_xgb
 
+# po_pca_temperature %>>%
+#     po_encode %>>%
+#     po_over %>>%
+#     po(lrn_glmnet) |>
+#     as_learner() -> lrn_pca_encode_over_glmnet
+
 po_pca_temperature %>>%
     po_encode %>>%
     po_over %>>%
@@ -176,13 +211,31 @@ design <- benchmark_grid(
         lrn_over_rf,
         lrn_pca_encode_over_xgb,
         lrn_pca_encode_over_lightgbm
+        # lrn_pca_encode_over_glmnet
     ),
     resamplings = cv3
 )
 design
 bmr <- benchmark(design)
-bmr$aggregate(measure)
+bmr$aggregate(measure) -> bmr_perf
+bmr_perf[, learner_id := forcats::fct_reorder(
+    learner_id, auc_test
+)]
+bmr_perf
+dotplot(
+    learner_id ~ auc_test +
+        classif.fbeta +
+        classif.ppv +
+        classif.fpr,
+    bmr_perf,
+    pch = 23,
+    size = 3,
+    auto.key = TRUE
+)
 
+qs::qsave(design, "data/results/stratified-sampling-approach/design.qs")
+qs::qsave(bmr, "data/results/stratified-sampling-approach/bmr.qs")
+qs::qsave(bmr_perf, "data/results/stratified-sampling-approach/bmr_perf.qs")
 
 # # TUNING --
 
