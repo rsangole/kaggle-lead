@@ -50,3 +50,15 @@ dat %>%
 
 rm(dat)
 gc(1, 1, 1)
+
+
+arrow_path <- here::here("data/arrow-timebasedsampling/")
+arrow_ds <- arrow::open_dataset(arrow_path)
+arrow_ds
+
+arrow_ds |>
+        dplyr::filter(
+                building_id == "Bld-1",
+                site_id == "Site-0",
+                primary_use == "education"
+        )
