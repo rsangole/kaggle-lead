@@ -82,6 +82,13 @@ po_encode <- po(
     affect_columns = selector_type("factor")
 )
 
+# * Target-Encoding
+po_tgtencode <- po(
+    "encodeimpact",
+    affect_columns = selector_type("factor")
+)
+# po_tgtencode$train(list(task))[[1]]$data()
+
 # * oversample minority class
 po_over <- po("classbalancing",
     id = "oversample",
@@ -93,25 +100,35 @@ po_over <- po("classbalancing",
 
 # * pipeline learners
 
-po_pca_temperature %>>%
-    po_encode %>>%
+# po_pca_temperature %>>%
+#     po_encode %>>%
+#     po_over %>>%
+#     po("imputeoor") %>>%
+#     po("fixfactors") %>>%
+#     po("imputesample") %>>%
+#     po(lrn_rf) |>
+#     as_learner() -> lrn_pca_encode_over_rf
+
+# lrn_pca_encode_over_rf$train(task)
+
+# po_pca_temperature %>>%
+#     po_encode %>>%
+#     po_over %>>%
+#     po("imputeoor") %>>%
+#     po("fixfactors") %>>%
+#     po("imputesample") %>>%
+#     po(lrn_xgb) |>
+#     as_learner() -> lrn_pca_encode_over_xgb
+# lrn_pca_encode_over_xgb$train(task)
+
+po_tgtencode %>>%
     po_over %>>%
     po("imputeoor") %>>%
     po("fixfactors") %>>%
     po("imputesample") %>>%
     po(lrn_rf) |>
-    as_learner() -> lrn_pca_encode_over_rf
+    as_learner() -> lrn_tgtencode_over_rf
+lrn_tgtencode_over_rf$predict_sets <- c("train", "test")
+lrn_tgtencode_over_rf$ train(task)
 
-lrn_pca_encode_over_rf$train(task)
-
-po_pca_temperature %>>%
-    po_encode %>>%
-    po_over %>>%
-    po("imputeoor") %>>%
-    po("fixfactors") %>>%
-    po("imputesample") %>>%
-    po(lrn_xgb) |>
-    as_learner() -> lrn_pca_encode_over_xgb
-lrn_pca_encode_over_xgb$train(task)
-
-qs::qsave(lrn_pca_encode_over_rf, "data/results/stratified-sampling-approach/lrn_pca_encode_over_rf.qs")
+qs::qsave(lrn_tgtencode_over_rf, "data/results/stratified-sampling-approach/lrn_tgtencode_over_rf.qs")

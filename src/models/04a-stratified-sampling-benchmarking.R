@@ -305,7 +305,7 @@ lrn_tgtencode_over_rf$predict_sets <- c("train", "test")
 # lrn_pca_encode_over_lightgbm$predict_sets <- c("train", "test")
 
 # Benchmarking
-design <- benchmark_grid(
+design2 <- benchmark_grid(
     tasks = list(
         task,
         task_bid_numeric,
@@ -313,10 +313,10 @@ design <- benchmark_grid(
         task_no_bid_site_cat
     ),
     learners = list(
-        lrn_pca_tgtencode_over_rf,
-        lrn_pca_encode_over_rf
-        # lrn_encode_over_rf,
-        # lrn_tgtencode_over_rf
+        # lrn_pca_tgtencode_over_rf,
+        # lrn_pca_encode_over_rf
+        lrn_encode_over_rf,
+        lrn_tgtencode_over_rf
         # lrn_pca_encode_under_rf,
         # lrn_pca_over_rf,
         # lrn_over_rf,
@@ -326,20 +326,20 @@ design <- benchmark_grid(
     ),
     resamplings = cv3
 )
-design
-bmr <- benchmark(design)
-bmr$aggregate(measure) -> bmr_perf
-bmr_perf[, learner_id := forcats::fct_reorder(
+design2
+bmr2 <- benchmark(design2)
+bmr2$aggregate(measure) -> bmr_perf2
+bmr_perf2[, learner_id := forcats::fct_reorder(
     learner_id, auc_test
 )]
-bmr_perf
+bmr_perf2
 dotplot(
     task_id ~ auc_test,
     groups = learner_id,
     # classif.fbeta +
     # classif.ppv +
     # classif.fpr,
-    bmr_perf,
+    bmr_perf2,
     pch = 23,
     size = 3,
     auto.key = TRUE
@@ -351,15 +351,15 @@ dotplot(
     # classif.fbeta +
     # classif.ppv +
     # classif.fpr,
-    bmr_perf,
+    bmr_perf2,
     pch = 23,
     size = 3,
     auto.key = TRUE
 )
 
-qs::qsave(design, "data/results/stratified-sampling-approach/design.qs")
-qs::qsave(bmr, "data/results/stratified-sampling-approach/bmr.qs")
-qs::qsave(bmr_perf, "data/results/stratified-sampling-approach/bmr_perf.qs")
+qs::qsave(design2, "data/results/stratified-sampling-approach/design2.qs")
+qs::qsave(bmr2, "data/results/stratified-sampling-approach/bmr2.qs")
+qs::qsave(bmr_perf2, "data/results/stratified-sampling-approach/bmr_perf2.qs")
 
 # # TUNING --
 
