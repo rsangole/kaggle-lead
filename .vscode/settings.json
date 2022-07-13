@@ -59,6 +59,7 @@
     // "vim.highlightedyank.enable": true,
     "vim.smartRelativeLine": true,
     "r.lsp.promptToInstall": false,
+    "docker.composeCommand": "docker compose"
     // "vsicons.dontShowNewVersionMessage": true,
     // "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 }

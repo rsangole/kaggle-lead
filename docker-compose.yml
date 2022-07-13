@@ -9,7 +9,7 @@ services:
       DISABLE_AUTH: "true"
     volumes:
       - type: "bind"
-        source: "/Users/rahul/github/github.com/kaggle-lead" 
+        source: "$GITHUBCOM_PATH/kaggle-lead"
         target: "/home/"
       - type: "bind"
         source: $LOCAL_RENV_CACHE

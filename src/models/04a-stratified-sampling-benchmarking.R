@@ -56,7 +56,8 @@ dat[, year_built_missing := year_built == 255]
 
 task <- as_task_classif(dat,
     target = "anomaly",
-    positive = "A1"
+    positive = "A1",
+    id = "all_factors"
 )
 task$select(setdiff(task$feature_names, "label")) # dropping 'Label'
 table(task$truth())
@@ -88,7 +89,9 @@ dat2 <- dat2[complete.cases(dat2)]
 
 task_bid_numeric <- as_task_classif(dat2,
     target = "anomaly",
-    positive = "A1"
+    positive = "A1",
+    id = "bid_numeric"
+
 )
 task_bid_numeric$select(setdiff(task_bid_numeric$feature_names, "label")) # dropping 'Label'
 table(task_bid_numeric$truth())
@@ -97,7 +100,8 @@ task_bid_numeric
 # * building_id removed, site_id as numeric
 task_no_bid <- as_task_classif(dat2,
     target = "anomaly",
-    positive = "A1"
+    positive = "A1",
+    id = "no_bid"
 )
 task_no_bid$select(setdiff(task_no_bid$feature_names, c("label", "building_id"))) # dropping 'Label'
 table(task_no_bid$truth())
@@ -106,7 +110,8 @@ task_no_bid
 # * building_id removed, site_id as categorical
 task_no_bid_site_cat <- as_task_classif(dat,
     target = "anomaly",
-    positive = "A1"
+    positive = "A1",
+    id = "no_bid_site_cat"
 )
 task_no_bid_site_cat$select(setdiff(task_no_bid_site_cat$feature_names, c("label", "building_id"))) # dropping 'Label'
 table(task_no_bid_site_cat$truth())
@@ -309,9 +314,9 @@ design <- benchmark_grid(
     ),
     learners = list(
         lrn_pca_tgtencode_over_rf,
-        lrn_pca_encode_over_rf,
-        lrn_encode_over_rf,
-        lrn_tgtencode_over_rf
+        lrn_pca_encode_over_rf
+        # lrn_encode_over_rf,
+        # lrn_tgtencode_over_rf
         # lrn_pca_encode_under_rf,
         # lrn_pca_over_rf,
         # lrn_over_rf,
@@ -329,8 +334,8 @@ bmr_perf[, learner_id := forcats::fct_reorder(
 )]
 bmr_perf
 dotplot(
-    task_id ~ auc_test +
-        classif.bacc,
+    task_id ~ auc_test,
+    groups = learner_id,
     # classif.fbeta +
     # classif.ppv +
     # classif.fpr,
@@ -340,9 +345,21 @@ dotplot(
     auto.key = TRUE
 )
 
-# qs::qsave(design, "data/results/stratified-sampling-approach/design.qs")
-# qs::qsave(bmr, "data/results/stratified-sampling-approach/bmr.qs")
-# qs::qsave(bmr_perf, "data/results/stratified-sampling-approach/bmr_perf.qs")
+dotplot(
+    task_id ~ classif.bacc,
+    groups = learner_id,
+    # classif.fbeta +
+    # classif.ppv +
+    # classif.fpr,
+    bmr_perf,
+    pch = 23,
+    size = 3,
+    auto.key = TRUE
+)
+
+qs::qsave(design, "data/results/stratified-sampling-approach/design.qs")
+qs::qsave(bmr, "data/results/stratified-sampling-approach/bmr.qs")
+qs::qsave(bmr_perf, "data/results/stratified-sampling-approach/bmr_perf.qs")
 
 # # TUNING --
 
