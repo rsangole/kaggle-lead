@@ -49,3 +49,4 @@ vignettes/*.pdf
 # External datasets
 inst/extdata/
 
+.Rproj.user

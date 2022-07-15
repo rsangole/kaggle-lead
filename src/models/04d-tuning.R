@@ -1,13 +1,11 @@
+library("mlr3tuning")
 library(mlr3verse)
 library(mlr3extralearners)
 library(mlr3pipelines)
-# install_catboost()
-# install_learners('classif.gamboost')
 library(data.table)
 library(arrow)
 library(plotly)
 library(lattice)
-# box::use(. / src / plotters)
 
 logger <- lgr::get_logger("mlr3")
 logger$set_threshold("debug")
@@ -25,18 +23,12 @@ dat <- ds |>
         -"timestamp"
     ) |>
     dplyr::filter(
-        label %in% c("train", "holdout"),
+        label %in% c("train"),
         meter_reading_missing == FALSE
     ) |>
     dplyr::collect() |>
     as.data.table()
-dat[, .N, site_id]
-dat[, .N, primary_use]
-dat[, .N, anomaly]
-dat[, .N, building_id]
-
 dat <- dat[complete.cases(dat)]
-
 dat[, building_id := as.factor(building_id)]
 dat[, label := as.factor(label)]
 dat[, primary_use := as.factor(primary_use)]
@@ -53,18 +45,12 @@ task
 # Base Leaners
 lrn_rf <- lrn(
     "classif.ranger",
-    num.trees = 150,
-    mtry = 15,
+    num.trees = 50,
     predict_sets = c("train", "test"),
     predict_type = "prob"
 )
+lrn_rf$param_set$values <- list(importance = "impurity")
 set_threads(lrn_rf)
-# lrn_xgb <- lrn(
-#     "classif.xgboost",
-#     predict_sets = c("train", "test"),
-#     predict_type = "prob"
-# )
-# set_threads(lrn_xgb)
 
 # Pipelines
 
@@ -82,13 +68,6 @@ po_encode <- po(
     method = "treatment",
     affect_columns = selector_type("factor")
 )
-
-# * Target-Encoding
-po_tgtencode <- po(
-    "encodeimpact",
-    affect_columns = selector_type("factor")
-)
-# po_tgtencode$train(list(task))[[1]]$data()
 
 # * oversample minority class
 po_over <- po("classbalancing",
@@ -108,28 +87,42 @@ po_pca_temperature %>>%
     po("fixfactors") %>>%
     po("imputesample") %>>%
     po(lrn_rf) |>
-    as_learner() -> lrn_pca_encode_over_rf_largemtry
+    as_learner() -> lrn_pca_encode_over_rf
 
-lrn_pca_encode_over_rf_largemtry$train(task)
+evals20 <- trm("evals", n_evals = 20)
 
-# po_pca_temperature %>>%
-#     po_encode %>>%
-#     po_over %>>%
-#     po("imputeoor") %>>%
-#     po("fixfactors") %>>%
-#     po("imputesample") %>>%
-#     po(lrn_xgb) |>
-#     as_learner() -> lrn_pca_encode_over_xgb
-# lrn_pca_encode_over_xgb$train(task)
+cv5 <- rsmp("repeated_cv", folds = 5L, repeats = 1)
+cv5$instantiate(task)
+cv5
 
-# po_tgtencode %>>%
-#     po_over %>>%
-#     po("imputeoor") %>>%
-#     po("fixfactors") %>>%
-#     po("imputesample") %>>%
-#     po(lrn_rf) |>
-#     as_learner() -> lrn_tgtencode_over_rf
-# lrn_tgtencode_over_rf$predict_sets <- c("train", "test")
-# lrn_tgtencode_over_rf$ train(task)
+search_space <- ps(
+        classif.ranger.num.trees = p_int(lower = 100, upper = 400),
+        classif.ranger.mtry = p_int(lower = 7, upper = 13)
+)
+search_space
 
-qs::qsave(lrn_pca_encode_over_rf_largemtry, "data/results/stratified-sampling-approach/lrn_pca_encode_over_rf_largemtry.qs")
+instance <- TuningInstanceSingleCrit$new(
+        task = task,
+        learner = lrn_pca_encode_over_rf,
+        resampling = cv5,
+        measure = msr("classif.auc"),
+        search_space = search_space,
+        terminator = evals20
+)
+instance
+
+tuner <- tnr("grid_search", resolution = 20)
+tuner
+
+tuner$optimize(instance)
+instance$result_learner_param_vals
+instance$result_y
+dt <- as.data.table(instance$archive)
+
+qs::qsave(instance, "data/results/stratified-sampling-approach/tuning-instance.qs")
+
+dt
+
+xyplot(classif.auc~classif.ranger.num.trees + classif.ranger.mtry,
+data = dt[order(classif.ranger.num.trees)],
+type = "o")

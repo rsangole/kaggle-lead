@@ -77,6 +77,8 @@ feat_cleanup_primary_use <- function(dat) {
 feat_cleanup_categoricals <- function(dat) {
         dat[, building_id := as.factor(sprintf("Bld-%d", building_id))]
         dat[, site_id := as.factor(sprintf("Site-%d", site_id))]
+        dat[, cloud_coverage_missing := cloud_coverage == 255]
+        dat[, year_built_missing := year_built == 255]
         if ("anomaly" %in% names(dat)) {
                 dat[, anomaly := as.factor(sprintf("A%d", anomaly))]
         }

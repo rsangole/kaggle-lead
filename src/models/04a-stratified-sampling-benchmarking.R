@@ -413,3 +413,10 @@ qs::qsave(bmr_perf2, "data/results/stratified-sampling-approach/bmr_perf2.qs")
 #     geom_line() +
 #     ylim(0.7, 1)
 # cowplot::plot_grid(utune_gg, otune_gg)
+
+
+bmr1 <- qs::qread("data/results/stratified-sampling-approach/bmr.qs")
+
+bmr2$combine(bmr1)
+
+bmr2
