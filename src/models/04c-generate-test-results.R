@@ -10,7 +10,7 @@ test_dat <- open_dataset("data/arrow-stratifiedsampling") |>
 test_dat[]
 
 # Read the model
-lrn_pca_encode_over_rf_largemtry <- qs::qread("data/results/stratified-sampling-approach/lrn_pca_encode_over_rf_largemtry.qs")
+lrn_pca_encode_over_rf_largemtry <- qs::qread("data/results/stratified-sampling-approach/lrn_pca_encode_over_rf_mtry30.qs")
 
 # Handle the missing values case
 results_missing_meter_reading <- test_dat[meter_reading_missing == TRUE, "row_id"]
@@ -39,4 +39,4 @@ pred_dat[, .N, anomaly]
 prediction <- rbindlist(list(pred_dat, results_missing_meter_reading))
 prediction[, .N, anomaly]
 
-fwrite(prediction, "data/results/stratified-sampling-approach/lrn_pca_encode_over_rf_largemtry-probs.csv")
+fwrite(prediction, "data/results/stratified-sampling-approach/lrn_pca_encode_over_rf_mtry30-probs.csv")

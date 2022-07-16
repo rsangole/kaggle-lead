@@ -45,7 +45,7 @@ task
 # Base Leaners
 lrn_rf <- lrn(
     "classif.ranger",
-    num.trees = 50,
+    num.trees = 100,
     predict_sets = c("train", "test"),
     predict_type = "prob"
 )
@@ -91,13 +91,13 @@ po_pca_temperature %>>%
 
 evals20 <- trm("evals", n_evals = 20)
 
-cv5 <- rsmp("repeated_cv", folds = 5L, repeats = 1)
+cv5 <- rsmp("repeated_cv", folds = 3L, repeats = 1)
 cv5$instantiate(task)
 cv5
 
 search_space <- ps(
-        classif.ranger.num.trees = p_int(lower = 100, upper = 400),
-        classif.ranger.mtry = p_int(lower = 7, upper = 13)
+        # classif.ranger.num.trees = p_int(lower = 150, upper = 350, special_vals = list(150, 250, 350)),
+        classif.ranger.mtry = p_int(lower = 15, upper = 45)
 )
 search_space
 
@@ -111,7 +111,7 @@ instance <- TuningInstanceSingleCrit$new(
 )
 instance
 
-tuner <- tnr("grid_search", resolution = 20)
+tuner <- tnr("grid_search", resolution = 5)
 tuner
 
 tuner$optimize(instance)
@@ -119,10 +119,10 @@ instance$result_learner_param_vals
 instance$result_y
 dt <- as.data.table(instance$archive)
 
-qs::qsave(instance, "data/results/stratified-sampling-approach/tuning-instance.qs")
+qs::qsave(instance, "data/results/stratified-sampling-approach/tuning-instance-mtry-search.qs")
 
 dt
 
-xyplot(classif.auc~classif.ranger.num.trees + classif.ranger.mtry,
-data = dt[order(classif.ranger.num.trees)],
+xyplot(classif.auc~classif.ranger.mtry,
+data = dt[order(classif.ranger.mtry)],
 type = "o")

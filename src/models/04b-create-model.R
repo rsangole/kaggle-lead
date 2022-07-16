@@ -53,8 +53,8 @@ task
 # Base Leaners
 lrn_rf <- lrn(
     "classif.ranger",
-    num.trees = 150,
-    mtry = 15,
+    num.trees = 110,
+    mtry = 30,
     predict_sets = c("train", "test"),
     predict_type = "prob"
 )
@@ -132,4 +132,4 @@ lrn_pca_encode_over_rf_largemtry$train(task)
 # lrn_tgtencode_over_rf$predict_sets <- c("train", "test")
 # lrn_tgtencode_over_rf$ train(task)
 
-qs::qsave(lrn_pca_encode_over_rf_largemtry, "data/results/stratified-sampling-approach/lrn_pca_encode_over_rf_largemtry.qs")
+qs::qsave(lrn_pca_encode_over_rf_largemtry, "data/results/stratified-sampling-approach/lrn_pca_encode_over_rf_mtry30.qs")
