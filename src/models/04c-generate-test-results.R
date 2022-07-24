@@ -25,9 +25,8 @@ test_predictions1 <- lrn_pca_encode_over_rf_largemtry$predict_newdata(test_dat_t
 test_predictions2 <- lrn_pca_encode_over_rf_largemtry$predict_newdata(test_dat_to_predict[(1e6+1):.N,])
 pred_dat <- rbindlist(
  list(
-
    as.data.table(test_predictions1)[, .(anomaly = prob.A1)],
-    as.data.table(test_predictions2)[, .(anomaly = prob.A1)][, row_ids := row_ids + 1e6]
+   as.data.table(test_predictions2)[, .(anomaly = prob.A1)]
  )
 )
 

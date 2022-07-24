@@ -1,5 +1,8 @@
 {
     // R setup
+    "r.libPaths": [
+        "/home/renv/library/R-4.2/x86_64-pc-linux-gnu"
+    ]
     "r.alwaysUseActiveTerminal": false, // depending on your workflow
     "r.rterm.linux": "/usr/local/bin/radian",
     "r.rterm.mac": " /usr/local/bin/radian",
@@ -42,6 +45,7 @@
         "/": "/",
         "./": "${folder}"
     },
+    "path-autocomplete.triggerOutsideStrings": true,
     "editor.suggestSelection": "recentlyUsedByPrefix",
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
@@ -56,7 +60,7 @@
     // "files.autoSave": "off", // optional
     // "explorer.confirmDragAndDrop": false,
     // "explorer.confirmDelete": false, // optional
-    // "vim.highlightedyank.enable": true,
+    "vim.highlightedyank.enable": true,
     "vim.smartRelativeLine": true,
     "r.lsp.promptToInstall": false,
     "docker.composeCommand": "docker compose"

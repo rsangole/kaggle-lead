@@ -14,3 +14,8 @@ services:
       - type: "bind"
         source: $LOCAL_RENV_CACHE
         target: "/renv/cache"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]

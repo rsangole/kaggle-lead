@@ -489,6 +489,12 @@
       "Hash": "eebd27ee58fcc58714eedb7aa07d8ad1",
       "Requirements": []
     },
+    "devtools": {
+      "Package": "devtools",
+      "Version": "2.4.4",
+      "Source": "Repository",
+      "Requirements": []
+    },
     "dials": {
       "Package": "dials",
       "Version": "1.0.0",
@@ -1487,10 +1493,8 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "1.0.2",
+      "Version": "1.0.3",
       "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "04884d9a75d778aca22c7154b8333ec9",
       "Requirements": []
     },
     "rpart": {
