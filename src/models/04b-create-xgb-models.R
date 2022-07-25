@@ -24,7 +24,7 @@ dat <- ds |>
         -"timestamp"
     ) |>
     dplyr::filter(
-        label %in% c("train"),
+        label %in% c("train", "holdout"),
         meter_reading_missing == FALSE
     ) |>
     dplyr::collect() |>
@@ -36,7 +36,6 @@ dat[, building_id := as.factor(building_id)]
 dat[, label := as.factor(label)]
 dat[, primary_use := as.factor(primary_use)]
 dat[, site_id := as.factor(site_id)]
-
 
 # Task
 task <- as_task_classif(dat,
@@ -110,6 +109,7 @@ po_pca_temperature %>>%
     as_learner() -> lrn_pca_ohot_over_xgb
 lrn_pca_ohot_over_xgb$predict_sets <- c("train", "test")
 set_threads(lrn_pca_ohot_over_xgb)
+lrn_pca_ohot_over_xgb$param_set$values$classif.xgboost.max_depth <- 20
 
 po_pca_temperature %>>%
     po_tgtencode %>>%
@@ -118,6 +118,7 @@ po_pca_temperature %>>%
     as_learner() -> lrn_pca_tgtencode_over_xgb
 lrn_pca_tgtencode_over_xgb$predict_sets <- c("train", "test")
 set_threads(lrn_pca_tgtencode_over_xgb)
+lrn_pca_tgtencode_over_xgb$param_set$values$classif.xgboost.max_depth <- 20
 
 po_to_numeric %>>%
     po_over %>>%
@@ -125,6 +126,7 @@ po_to_numeric %>>%
     as_learner() -> lrn_num_over_xgb
 lrn_num_over_xgb$predict_sets <- c("train", "test")
 set_threads(lrn_num_over_xgb)
+lrn_num_over_xgb$param_set$values$classif.xgboost.max_depth <- 20
 
 po_pca_temperature %>>%
     po_bid_numeric %>>%
@@ -134,6 +136,7 @@ po_pca_temperature %>>%
     as_learner() -> lrn_pca_bidnum_ohot_over_xgb
 lrn_pca_bidnum_ohot_over_xgb$predict_sets <- c("train", "test")
 set_threads(lrn_pca_bidnum_ohot_over_xgb)
+lrn_pca_bidnum_ohot_over_xgb$param_set$values$classif.xgboost.max_depth <- 20
 
 po_tgtencode %>>%
     po_over %>>%
@@ -141,6 +144,7 @@ po_tgtencode %>>%
     as_learner() -> lrn_tgtencode_over_xgb
 lrn_tgtencode_over_xgb$predict_sets <- c("train", "test")
 set_threads(lrn_tgtencode_over_xgb)
+lrn_tgtencode_over_xgb$param_set$values$classif.xgboost.max_depth <- 20
 
 po_pca_temperature %>>%
     po_onehot %>>%
@@ -149,106 +153,32 @@ po_pca_temperature %>>%
     as_learner() -> lrn_pca_ohot_under_xgb
 lrn_pca_ohot_under_xgb$predict_sets <- c("train", "test")
 set_threads(lrn_pca_ohot_under_xgb)
+lrn_pca_ohot_under_xgb$param_set$values$classif.xgboost.max_depth <- 20
 
-# evaluation
-evals <- trm("evals", n_evals = 30)
-evals
 
-# cross validation
-cv3 <- rsmp("repeated_cv", folds = 3L, repeats = 1)
-cv3$instantiate(task)
-cv3
-
-search_space <- ps(
-    classif.xgboost.eta = p_dbl(lower = 0.01, upper = 0.3),
-    classif.xgboost.colsample_bytree = p_dbl(lower = 0.5, upper = 1),
-    classif.xgboost.max_depth = p_int(lower = 3, upper = 10)
-)
-search_space
-
-# func
-tune_and_save <- function(tsk,
-                          lrnr,
-                          resamp,
-                          meas = msr("classif.auc"),
-                          ss,
-                          term,
-                          tuner,
-                          outglob,
-                          logfile,
-                          outpath = "data/results/stratified-sampling-approach") {
+#  func
+train_and_save <- function(tsk,
+                           lrnr,
+                           outglob,
+                           logfile = "xgb-training",
+                           outpath = "data/results/stratified-sampling-approach/xgb") {
+    fs::dir_create(outpath)
     tf <- fs::path(outpath, logfile, ext = "log")
     lgr$add_appender(AppenderFile$new(tf), name = "file")
 
-    lgr$info("--- New tune & save call: %s ---", outglob)
+    lgr$info("--- New train & save call: %s ---", outglob)
+    lgr$info("Training model")
+    lrnr$train(tsk)
 
-    lgr$info("Creating instance")
-    instance <- TuningInstanceSingleCrit$new(
-        task = tsk,
-        learner = lrnr,
-        resampling = resamp,
-        measure = meas,
-        search_space = ss,
-        terminator = term
-    )
-
-    lgr$info("Optimizing")
-    tuner$optimize(instance)
-    dt <- as.data.table(instance$archive)
-
-    lgr$info("Saving outputs to qs files")
-    qs::qsave(instance, fs::path(outpath, paste0(outglob, "-instance"), ext = "qs"))
-    qs::qsave(
-        tibble::lst(
-            result_learner_param_vals = instance$result_learner_param_vals,
-            result_y = instance$result_y,
-            result = dt
-        ),
-        fs::path(outpath, paste0(outglob, "-result"), ext = "qs")
-    )
+    lgr$info("Saving learner to qs file")
+    qs::qsave(lrnr, fs::path(outpath, paste0(outglob, "-learner"), ext = "qs"))
 
     lgr$info("Done")
 }
 
-tune_and_save(
-    tsk = task,
-    lrnr = lrn_pca_bidnum_ohot_over_xgb,
-    resamp = cv3,
-    meas = msr("classif.auc"),
-    ss = ps(
-        classif.xgboost.colsample_bytree = p_dbl(lower = 0.5, upper = 1),
-        classif.xgboost.max_depth = p_int(lower = 10, upper = 20)
-    ),
-    term = trm("evals", n_evals = 30),
-    tuner = tnr("grid_search", resolution = 4),
-    outglob = "lrn_pca_bidnum_ohot_over_xgb",
-    logfile = "xgb-tuning"
-)
-
-tune_and_save(
-    tsk = task,
-    lrnr = lrn_num_over_xgb,
-    resamp = cv3,
-    meas = msr("classif.auc"),
-    ss = ps(
-        classif.xgboost.colsample_bytree = p_dbl(lower = 0.5, upper = 1),
-        classif.xgboost.max_depth = p_int(lower = 10, upper = 20)
-    ),
-    term = trm("evals", n_evals = 30),
-    tuner = tnr("grid_search", resolution = 4),
-    outglob = "lrn_num_over_xgb",
-    logfile = "xgb-tuning"
-)
-
-
-# post processing
-qs::qread("/home/data/results/stratified-sampling-approach/lrn_num_over_xgb-result.qs") -> r1
-qs::qread("/home/data/results/stratified-sampling-approach/lrn_pca_bidnum_ohot_over_xgb-result.qs") -> r2
-library(lattice, help, pos = 2, lib.loc = NULL)
-xyplot(
-    classif.auc ~ classif.xgboost.max_depth,
-    groups = classif.xgboost.colsample_bytree,
-    data = r1$result,
-    auto.key = TRUE,
-    pch = 13
-)
+train_and_save(task, lrn_pca_bidnum_ohot_over_xgb, "lrn_pca_bidnum_ohot_over_xgb")
+train_and_save(task, lrn_pca_tgtencode_over_xgb, "lrn_pca_tgtencode_over_xgb")
+train_and_save(task, lrn_num_over_xgb, "lrn_num_over_xgb")
+# train_and_save(task, lrn_pca_ohot_over_xgb, "lrn_pca_ohot_over_xgb")
+train_and_save(task, lrn_tgtencode_over_xgb, "lrn_tgtencode_over_xgb")
+# train_and_save(task, lrn_pca_ohot_under_xgb, "lrn_pca_ohot_under_xgb")
