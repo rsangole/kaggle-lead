@@ -84,3 +84,7 @@ feat_cleanup_categoricals <- function(dat) {
         }
         dat
 }
+
+pad_by_time(sdat, "timestamp") |>
+        mutate(meter_reading = ts_impute_vec(meter_reading)) |>
+        plot_stl_diagnostics(timestamp, meter_reading, .interactive = FALSE)

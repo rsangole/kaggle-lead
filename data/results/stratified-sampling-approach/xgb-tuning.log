@@ -1,0 +1,153 @@
+INFO  [2022-07-25 11:51:43.752] --- New tune & save call: lrn_pca_bidnum_ohot_over_xgb ---
+INFO  [2022-07-25 11:51:43.792] Creating instance
+INFO  [2022-07-25 11:52:07.637] --- New tune & save call: lrn_pca_bidnum_ohot_over_xgb ---
+INFO  [2022-07-25 11:52:07.675] Creating instance
+INFO  [2022-07-25 11:52:08.054] Optimizing
+INFO  [2022-07-25 11:52:08.072] [bbotk] Starting to optimize 2 parameter(s) with '<TunerGridSearch>' and '<TerminatorEvals> [n_evals=30, k=0]'
+INFO  [2022-07-25 11:52:08.080] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 11:52:08.157] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 11:52:08.232] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 11:52:36.094] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 11:53:00.043] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 11:53:25.191] [mlr3] Finished benchmark
+INFO  [2022-07-25 11:53:25.615] [bbotk] Result of batch 1:
+INFO  [2022-07-25 11:53:25.622] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 11:53:25.622] [bbotk]                               0.5                         9    0.904605
+INFO  [2022-07-25 11:53:25.622] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 11:53:25.622] [bbotk]         0      0           45.982 2a0577c2-2099-432f-90c3-3d8ac7d44bf9
+INFO  [2022-07-25 11:53:25.630] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 11:53:25.721] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 11:53:25.734] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 11:53:51.087] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 11:54:15.510] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 11:54:40.534] [mlr3] Finished benchmark
+INFO  [2022-07-25 11:54:40.919] [bbotk] Result of batch 2:
+INFO  [2022-07-25 11:54:40.924] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 11:54:40.924] [bbotk]                              0.75                        12   0.9221049
+INFO  [2022-07-25 11:54:40.924] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 11:54:40.924] [bbotk]         0      0           45.378 c44977c9-8e9a-47f5-abc5-4675b248db12
+INFO  [2022-07-25 11:54:40.928] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 11:54:41.003] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 11:54:41.012] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 11:55:06.016] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 11:55:30.564] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 11:55:55.098] [mlr3] Finished benchmark
+INFO  [2022-07-25 11:55:55.444] [bbotk] Result of batch 3:
+INFO  [2022-07-25 11:55:55.448] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 11:55:55.448] [bbotk]                              0.75                         9   0.8960249
+INFO  [2022-07-25 11:55:55.448] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 11:55:55.448] [bbotk]         0      0            43.59 b76db46f-042d-4143-a4da-3f239a0e0182
+INFO  [2022-07-25 11:55:55.452] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 11:55:55.531] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 11:55:55.541] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 11:56:20.487] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 11:56:45.464] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 11:57:10.085] [mlr3] Finished benchmark
+INFO  [2022-07-25 11:57:10.429] [bbotk] Result of batch 4:
+INFO  [2022-07-25 11:57:10.433] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 11:57:10.433] [bbotk]                                 1                         9   0.9158313
+INFO  [2022-07-25 11:57:10.433] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 11:57:10.433] [bbotk]         0      0           43.549 e813d502-b2d4-40e2-80fc-c829e8018885
+INFO  [2022-07-25 11:57:10.437] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 11:57:10.513] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 11:57:10.522] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 11:57:35.190] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 11:57:59.562] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 11:58:24.461] [mlr3] Finished benchmark
+INFO  [2022-07-25 11:58:24.869] [bbotk] Result of batch 5:
+INFO  [2022-07-25 11:58:24.874] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 11:58:24.874] [bbotk]                                 1                        12   0.9368918
+INFO  [2022-07-25 11:58:24.874] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 11:58:24.874] [bbotk]         0      0           43.892 f46fb7a6-3ea4-45ba-b195-cdbafbbbb9d5
+INFO  [2022-07-25 11:58:24.877] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 11:58:24.972] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 11:58:24.987] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 11:58:52.293] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 11:59:17.638] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 11:59:45.530] [mlr3] Finished benchmark
+INFO  [2022-07-25 11:59:45.917] [bbotk] Result of batch 6:
+INFO  [2022-07-25 11:59:45.921] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 11:59:45.921] [bbotk]                                 1                        15   0.9478673
+INFO  [2022-07-25 11:59:45.921] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 11:59:45.921] [bbotk]         0      0           49.406 e61807f7-1892-447b-8c2d-5072509c988d
+INFO  [2022-07-25 11:59:45.924] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 11:59:45.999] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 11:59:46.009] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 12:00:11.226] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 12:00:35.914] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 12:01:00.668] [mlr3] Finished benchmark
+INFO  [2022-07-25 12:01:01.028] [bbotk] Result of batch 7:
+INFO  [2022-07-25 12:01:01.033] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 12:01:01.033] [bbotk]                               0.5                        12   0.9415625
+INFO  [2022-07-25 12:01:01.033] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 12:01:01.033] [bbotk]         0      0           44.154 3d342831-0fd0-4ab1-8497-514594dd7218
+INFO  [2022-07-25 12:01:01.037] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 12:01:01.112] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 12:01:01.121] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 12:01:25.081] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 12:01:49.471] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 12:02:14.361] [mlr3] Finished benchmark
+INFO  [2022-07-25 12:02:14.748] [bbotk] Result of batch 8:
+INFO  [2022-07-25 12:02:14.752] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 12:02:14.752] [bbotk]                              0.75                        15   0.9465618
+INFO  [2022-07-25 12:02:14.752] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 12:02:14.752] [bbotk]         0      0           43.423 c654fcfa-d5f3-41da-8c54-924677b14f1e
+INFO  [2022-07-25 12:02:14.757] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 12:02:14.835] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 12:02:14.844] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 12:02:39.740] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 12:03:03.837] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 12:03:28.214] [mlr3] Finished benchmark
+INFO  [2022-07-25 12:03:28.596] [bbotk] Result of batch 9:
+INFO  [2022-07-25 12:03:28.600] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 12:03:28.600] [bbotk]                               0.5                        15   0.9378325
+INFO  [2022-07-25 12:03:28.600] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 12:03:28.600] [bbotk]         0      0           43.403 922edd95-fa48-425a-bc9a-21814d743c4f
+INFO  [2022-07-25 12:03:28.609] [bbotk] Finished optimizing after 9 evaluation(s)
+INFO  [2022-07-25 12:03:28.612] [bbotk] Result:
+INFO  [2022-07-25 12:03:28.616] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth learner_param_vals
+INFO  [2022-07-25 12:03:28.616] [bbotk]                                 1                        15         <list[15]>
+INFO  [2022-07-25 12:03:28.616] [bbotk]   x_domain classif.auc
+INFO  [2022-07-25 12:03:28.616] [bbotk]  <list[2]>   0.9478673
+INFO  [2022-07-25 12:03:28.627] Saving outputs to qs files
+INFO  [2022-07-25 12:30:05.860] --- New tune & save call: lrn_pca_bidnum_ohot_over_xgb ---
+INFO  [2022-07-25 12:30:05.907] Creating instance
+INFO  [2022-07-25 12:30:06.357] Optimizing
+INFO  [2022-07-25 12:30:06.374] [bbotk] Starting to optimize 2 parameter(s) with '<TunerGridSearch>' and '<TerminatorEvals> [n_evals=30, k=0]'
+INFO  [2022-07-25 12:30:06.382] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 12:30:06.465] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 12:30:06.532] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 12:30:38.002] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 12:31:05.311] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 12:31:33.686] [mlr3] Finished benchmark
+INFO  [2022-07-25 12:31:34.144] [bbotk] Result of batch 1:
+INFO  [2022-07-25 12:31:34.148] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 12:31:34.148] [bbotk]                               0.5                        20   0.9433508
+INFO  [2022-07-25 12:31:34.148] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 12:31:34.148] [bbotk]         0      0           53.604 9339fc10-446f-4c38-971f-cc70a18e81c2
+INFO  [2022-07-25 12:31:34.154] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 12:31:34.245] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 12:31:34.258] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 12:32:02.669] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 12:32:30.636] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 12:32:58.551] [mlr3] Finished benchmark
+INFO  [2022-07-25 12:32:58.986] [bbotk] Result of batch 2:
+INFO  [2022-07-25 12:32:58.991] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 12:32:58.991] [bbotk]                         0.8333333                        17   0.9469194
+INFO  [2022-07-25 12:32:58.991] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 12:32:58.991] [bbotk]         0      0           51.884 eff9bb38-d60b-4ee3-b179-7da5703c8459
+INFO  [2022-07-25 12:32:58.997] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 12:32:59.087] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 12:32:59.100] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 2/3)
+INFO  [2022-07-25 12:33:27.127] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)
+INFO  [2022-07-25 12:33:54.870] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 12:34:21.008] [mlr3] Finished benchmark
+INFO  [2022-07-25 12:34:21.434] [bbotk] Result of batch 3:
+INFO  [2022-07-25 12:34:21.439] [bbotk]  classif.xgboost.colsample_bytree classif.xgboost.max_depth classif.auc
+INFO  [2022-07-25 12:34:21.439] [bbotk]                               0.5                        10    0.925466
+INFO  [2022-07-25 12:34:21.439] [bbotk]  warnings errors runtime_learners                                uhash
+INFO  [2022-07-25 12:34:21.439] [bbotk]         0      0            48.43 c6295b6e-9337-4ab8-a00f-253e1e7f282d
+INFO  [2022-07-25 12:34:21.446] [bbotk] Evaluating 1 configuration(s)
+INFO  [2022-07-25 12:34:21.536] [mlr3] Running benchmark with 3 resampling iterations
+INFO  [2022-07-25 12:34:21.551] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 1/3)
+INFO  [2022-07-25 12:34:46.403] [mlr3] Applying learner 'pca.colapply.encode.oversample.classif.xgboost' on task 'dat' (iter 3/3)

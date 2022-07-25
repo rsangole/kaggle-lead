@@ -138,8 +138,8 @@ po_pca_temperature %>>%
     po_over %>>%
     po(lrn_xgb) |>
     as_learner() -> lrn_pca_ohot_over_xgb
-lrn_pca_encode_over_xgb$predict_sets <- c("train", "test")
-set_threads(lrn_pca_encode_over_xgb)
+lrn_pca_ohot_over_xgb$predict_sets <- c("train", "test")
+set_threads(lrn_pca_ohot_over_xgb)
 
 po_pca_temperature %>>%
     po_tgtencode %>>%
@@ -224,7 +224,7 @@ dotplot(
     auto.key = TRUE
 )
 
-qs::qsave(design2, "data/results/stratified-sampling-approach/design_xgb.qs")
+qs::qsave(design_xgb, "data/results/stratified-sampling-approach/design_xgb.qs")
 qs::qsave(bmr_xgb, "data/results/stratified-sampling-approach/bmr_xgb.qs")
 qs::qsave(bmr_xgb_perf, "data/results/stratified-sampling-approach/bmr_xgb_perf.qs")
 
