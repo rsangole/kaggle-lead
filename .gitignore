@@ -50,3 +50,6 @@ vignettes/*.pdf
 inst/extdata/
 
 .Rproj.user
+.cache/
+*.tar
+_targets/objects

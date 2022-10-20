@@ -1,3 +1,38 @@
+#' @export
+feat_make_numeric_features_for_catboost <- function(dat){
+  x <- dat |> 
+    lazy_dt() |> 
+    mutate(
+      meter_reading_missing = as.factor(meter_reading_missing)
+    ) |> 
+    collect() |> 
+    as.data.table()
+  int_to_dbl_cols <- x[, names(.SD), .SDcols = is.numeric]
+  x[, (int_to_dbl_cols) := lapply(.SD, as.double), .SDcols = int_to_dbl_cols]
+  lgl_to_dbl_cols <- x[, names(.SD), .SDcols = is.logical]
+  x[, (lgl_to_dbl_cols) := lapply(.SD, as.numeric), .SDcols = lgl_to_dbl_cols]
+  
+  x
+}
+
+#' @export
+feat_train_test_split <- function(dat,
+                                  HOLDOUT_SET_PERCENTAGE) {
+  setkey(dat, timestamp)
+  dat[, row_id := 1:.N]
+  row_id_dat <- dat[, row_id, .(anomaly, building_id)]
+  holdout_indices <- row_id_dat[, .(row_id = sample(row_id, size = HOLDOUT_SET_PERCENTAGE * nrow(.SD))),
+                                .(anomaly, building_id)]
+  holdout_indices[, label := "holdout"]
+  holdout_indices[, c("anomaly", "building_id") := NULL]
+  
+  dat <- merge.data.table(x = dat,
+                          y = holdout_indices,
+                          by = "row_id",
+                          all.x = TRUE)
+  dat[is.na(label), label := "train"]
+  dat
+}
 
 #' @export
 feat_removeNA_add_lags <- function(dat,
@@ -85,6 +120,6 @@ feat_cleanup_categoricals <- function(dat) {
         dat
 }
 
-pad_by_time(sdat, "timestamp") |>
-        mutate(meter_reading = ts_impute_vec(meter_reading)) |>
-        plot_stl_diagnostics(timestamp, meter_reading, .interactive = FALSE)
+# pad_by_time(sdat, "timestamp") |>
+#         mutate(meter_reading = ts_impute_vec(meter_reading)) |>
+#         plot_stl_diagnostics(timestamp, meter_reading, .interactive = FALSE)

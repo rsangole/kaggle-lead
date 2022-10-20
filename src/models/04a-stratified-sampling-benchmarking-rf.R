@@ -1,150 +1,150 @@
-library(mlr3verse)
-library(mlr3extralearners)
-library(mlr3pipelines)
-# install_catboost()
-# install_learners('classif.gamboost')
-library(data.table)
-library(arrow)
-library(plotly)
-library(lattice)
-# box::use(. / src / plotters)
+# library(mlr3verse)
+# library(mlr3extralearners)
+# library(mlr3pipelines)
+# # install_catboost()
+# # install_learners('classif.gamboost')
+# library(data.table)
+# library(arrow)
+# library(plotly)
+# library(lattice)
+# # box::use(. / src / plotters)
+# 
+# logger <- lgr::get_logger("mlr3")
+# logger$set_threshold("debug")
+# tf <- "data/results/stratified-sampling-approach/log.json"
+# logger$add_appender(lgr::AppenderJson$new(tf), name = "json")
+# 
+# set.seed(42)
+# 
+# ds <- open_dataset("data/arrow-stratifiedsampling")
+# 
+# # Tasks
+# 
+# # * building_id and site_id are factors
+# 
+# dat <- ds |>
+#     dplyr::select(
+#         -"building_hour",
+#         -"building_meter",
+#         -"building_month",
+#         -"building_weekday",
+#         -"building_weekday_hour",
+#         -"weekday_hour",
+#         -"row_id",
+#         -"timestamp"
+#     ) |>
+#     dplyr::filter(
+#         label == "train",
+#         meter_reading_missing == FALSE
+#     ) |>
+#     dplyr::collect() |>
+#     as.data.table()
+# dat[, .N, site_id]
+# dat[, .N, primary_use]
+# dat[, .N, anomaly]
+# dat[, .N, building_id]
+# # skimr::skim(dat)
+# 
+# dat <- dat[complete.cases(dat)]
+# # dat[, row_id := 1:.N]
+# dat[, building_id := as.factor(building_id)]
+# dat[, label := as.factor(label)]
+# dat[, primary_use := as.factor(primary_use)]
+# dat[, site_id := as.factor(site_id)]
+# dat[, cloud_coverage_missing := cloud_coverage == 255]
+# dat[, year_built_missing := year_built == 255]
 
-logger <- lgr::get_logger("mlr3")
-logger$set_threshold("debug")
-tf <- "data/results/stratified-sampling-approach/log.json"
-logger$add_appender(lgr::AppenderJson$new(tf), name = "json")
+# task <- as_task_classif(dat,
+#     target = "anomaly",
+#     positive = "A1",
+#     id = "all_factors"
+# )
+# task$select(setdiff(task$feature_names, "label")) # dropping 'Label'
+# table(task$truth())
+# task
 
-set.seed(42)
+# # * building_id as numeric (similar numbers are closer together)
+# dat2 <- ds |>
+#     dplyr::select(
+#         -"building_hour",
+#         -"building_meter",
+#         -"building_month",
+#         -"building_weekday",
+#         -"building_weekday_hour",
+#         -"weekday_hour",
+#         -"row_id",
+#         -"timestamp"
+#     ) |>
+#     dplyr::filter(
+#         label == "train",
+#         meter_reading_missing == FALSE
+#     ) |>
+#     dplyr::collect() |>
+#     as.data.table()
+# dat2[, building_id := as.numeric(gsub("Bld-", "", building_id))]
+# dat2[, site_id := as.numeric(gsub("Site-", "", site_id))]
+# dat2[, cloud_coverage_missing := cloud_coverage == 255]
+# dat2[, year_built_missing := year_built == 255]
+# dat2 <- dat2[complete.cases(dat2)]
 
-ds <- open_dataset("data/arrow-stratifiedsampling")
-
-# Tasks
-
-# * building_id and site_id are factors
-
-dat <- ds |>
-    dplyr::select(
-        -"building_hour",
-        -"building_meter",
-        -"building_month",
-        -"building_weekday",
-        -"building_weekday_hour",
-        -"weekday_hour",
-        -"row_id",
-        -"timestamp"
-    ) |>
-    dplyr::filter(
-        label == "train",
-        meter_reading_missing == FALSE
-    ) |>
-    dplyr::collect() |>
-    as.data.table()
-dat[, .N, site_id]
-dat[, .N, primary_use]
-dat[, .N, anomaly]
-dat[, .N, building_id]
-# skimr::skim(dat)
-
-dat <- dat[complete.cases(dat)]
-# dat[, row_id := 1:.N]
-dat[, building_id := as.factor(building_id)]
-dat[, label := as.factor(label)]
-dat[, primary_use := as.factor(primary_use)]
-dat[, site_id := as.factor(site_id)]
-dat[, cloud_coverage_missing := cloud_coverage == 255]
-dat[, year_built_missing := year_built == 255]
-
-task <- as_task_classif(dat,
-    target = "anomaly",
-    positive = "A1",
-    id = "all_factors"
-)
-task$select(setdiff(task$feature_names, "label")) # dropping 'Label'
-table(task$truth())
-task
-
-# * building_id as numeric (similar numbers are closer together)
-dat2 <- ds |>
-    dplyr::select(
-        -"building_hour",
-        -"building_meter",
-        -"building_month",
-        -"building_weekday",
-        -"building_weekday_hour",
-        -"weekday_hour",
-        -"row_id",
-        -"timestamp"
-    ) |>
-    dplyr::filter(
-        label == "train",
-        meter_reading_missing == FALSE
-    ) |>
-    dplyr::collect() |>
-    as.data.table()
-dat2[, building_id := as.numeric(gsub("Bld-", "", building_id))]
-dat2[, site_id := as.numeric(gsub("Site-", "", site_id))]
-dat2[, cloud_coverage_missing := cloud_coverage == 255]
-dat2[, year_built_missing := year_built == 255]
-dat2 <- dat2[complete.cases(dat2)]
-
-task_bid_numeric <- as_task_classif(dat2,
-    target = "anomaly",
-    positive = "A1",
-    id = "bid_numeric"
-
-)
-task_bid_numeric$select(setdiff(task_bid_numeric$feature_names, "label")) # dropping 'Label'
-table(task_bid_numeric$truth())
-task_bid_numeric
+# task_bid_numeric <- as_task_classif(dat2,
+#     target = "anomaly",
+#     positive = "A1",
+#     id = "bid_numeric"
+# 
+# )
+# task_bid_numeric$select(setdiff(task_bid_numeric$feature_names, "label")) # dropping 'Label'
+# table(task_bid_numeric$truth())
+# task_bid_numeric
 
 # * building_id removed, site_id as numeric
-task_no_bid <- as_task_classif(dat2,
-    target = "anomaly",
-    positive = "A1",
-    id = "no_bid"
-)
-task_no_bid$select(setdiff(task_no_bid$feature_names, c("label", "building_id"))) # dropping 'Label'
-table(task_no_bid$truth())
-task_no_bid
-
-# * building_id removed, site_id as categorical
-task_no_bid_site_cat <- as_task_classif(dat,
-    target = "anomaly",
-    positive = "A1",
-    id = "no_bid_site_cat"
-)
-task_no_bid_site_cat$select(setdiff(task_no_bid_site_cat$feature_names, c("label", "building_id"))) # dropping 'Label'
-table(task_no_bid_site_cat$truth())
-task_no_bid_site_cat
-
-# Resampling Strategy
-cv3 <- rsmp("cv", folds = 3)
-cv3$instantiate(task)
-cv3
+# task_no_bid <- as_task_classif(dat2,
+#     target = "anomaly",
+#     positive = "A1",
+#     id = "no_bid"
+# )
+# task_no_bid$select(setdiff(task_no_bid$feature_names, c("label", "building_id"))) # dropping 'Label'
+# table(task_no_bid$truth())
+# task_no_bid
+# 
+# # * building_id removed, site_id as categorical
+# task_no_bid_site_cat <- as_task_classif(dat,
+#     target = "anomaly",
+#     positive = "A1",
+#     id = "no_bid_site_cat"
+# )
+# task_no_bid_site_cat$select(setdiff(task_no_bid_site_cat$feature_names, c("label", "building_id"))) # dropping 'Label'
+# table(task_no_bid_site_cat$truth())
+# task_no_bid_site_cat
+# 
+# # Resampling Strategy
+# cv3 <- rsmp("cv", folds = 3)
+# cv3$instantiate(task)
+# cv3
 
 # Parameters
 
 # Measures
-measure <- list(
-    msr("classif.fbeta"),
-    msr("classif.auc", predict_sets = "train", id = "auc_train"),
-    msr("classif.auc", id = "auc_test"),
-    msr("classif.ppv"),
-    msr("classif.fpr"),
-    msr("time_both"),
-    msr("classif.bacc")
-)
-measure
+# measure <- list(
+#     msr("classif.fbeta"),
+#     msr("classif.auc", predict_sets = "train", id = "auc_train"),
+#     msr("classif.auc", id = "auc_test"),
+#     msr("classif.ppv"),
+#     msr("classif.fpr"),
+#     msr("time_both"),
+#     msr("classif.bacc")
+# )
+# measure
 
 # Base Leaners
 
-lrn_rf <- lrn(
-    "classif.ranger",
-    num.trees = 100,
-    predict_sets = c("train", "test"),
-    predict_type = "prob"
-)
-set_threads(lrn_rf)
+# lrn_rf <- lrn(
+#     "classif.ranger",
+#     num.trees = 100,
+#     predict_sets = c("train", "test"),
+#     predict_type = "prob"
+# )
+# set_threads(lrn_rf)
 
 # lrn_glmnet <- lrn(
 #     "classif.glmnet",
@@ -168,88 +168,88 @@ set_threads(lrn_rf)
 
 # Pipelines
 
-# * PCA numeric
-po_pca_temperature <- po(
-    "pca",
-    affect_columns = selector_grep("temp"),
-    center = TRUE,
-    scale. = TRUE
-)
-
-# * Encode Factors
-po_encode <- po(
-    "encode",
-    method = "treatment",
-    affect_columns = selector_type("factor")
-)
-# po_encode$train(list(task))
-
-# * Target-Encoding
-po_tgtencode <- po(
-    "encodeimpact",
-    affect_columns = selector_type("factor")
-)
+# # # * PCA numeric
+# # po_pca_temperature <- po(
+# #     "pca",
+# #     affect_columns = selector_grep("temp"),
+# #     center = TRUE,
+# #     scale. = TRUE
+# # )
+# # 
+# # # * Encode Factors
+# # po_encode <- po(
+# #     "encode",
+# #     method = "treatment",
+# #     affect_columns = selector_type("factor")
+# # )
+# # # po_encode$train(list(task))
+# 
+# # * Target-Encoding
+# po_tgtencode <- po(
+#     "encodeimpact",
+#     affect_columns = selector_type("factor")
+# )
 # po_tgtencode$train(list(task))[[1]]$data()
-
-# * undersample majority class
-po_under <- po("classbalancing",
-    id = "undersample",
-    adjust = "major",
-    reference = "major",
-    shuffle = FALSE,
-    ratio = 1 / 50
-)
-# table(po_under$train(list(task))$output$truth())
-
-# * oversample minority class
-po_over <- po("classbalancing",
-    id = "oversample",
-    adjust = "minor",
-    reference = "minor",
-    shuffle = FALSE,
-    ratio = 10
-)
+# 
+# # * undersample majority class
+# po_under <- po("classbalancing",
+#     id = "undersample",
+#     adjust = "major",
+#     reference = "major",
+#     shuffle = FALSE,
+#     ratio = 1 / 50
+# )
+# # table(po_under$train(list(task))$output$truth())
+# 
+# # * oversample minority class
+# po_over <- po("classbalancing",
+#     id = "oversample",
+#     adjust = "minor",
+#     reference = "minor",
+#     shuffle = FALSE,
+#     ratio = 10
+# )
 # table(po_over$train(list(task))$output$truth())
 
 # * pipeline learners
 
-po_pca_temperature %>>%
-    po_encode %>>%
-    po_over %>>%
-    po("imputeoor") %>>%
-    po("fixfactors") %>>%
-    po("imputesample") %>>%
-    po(lrn_rf) |>
-    as_learner() -> lrn_pca_encode_over_rf
-lrn_pca_encode_over_rf$predict_sets <- c("train", "test")
+# po_pca_temperature %>>%
+#     po_encode %>>%
+#     po_over %>>%
+#     po("imputeoor") %>>%
+#     po("fixfactors") %>>%
+#     po("imputesample") %>>%
+#     po(lrn_rf) |>
+#     as_learner() -> lrn_pca_encode_over_rf
+# lrn_pca_encode_over_rf$predict_sets <- c("train", "test")
+# 
+# po_pca_temperature %>>%
+#     po_tgtencode %>>%
+#     po_over %>>%
+#     po("imputeoor") %>>%
+#     po("fixfactors") %>>%
+#     po("imputesample") %>>%
+#     po(lrn_rf) |>
+#     as_learner() -> lrn_pca_tgtencode_over_rf
+# lrn_pca_tgtencode_over_rf$predict_sets <- c("train", "test")
 
-po_pca_temperature %>>%
-    po_tgtencode %>>%
-    po_over %>>%
-    po("imputeoor") %>>%
-    po("fixfactors") %>>%
-    po("imputesample") %>>%
-    po(lrn_rf) |>
-    as_learner() -> lrn_pca_tgtencode_over_rf
-lrn_pca_tgtencode_over_rf$predict_sets <- c("train", "test")
+# po_encode %>>%
+#     po_over %>>%
+#     po("imputeoor") %>>%
+#     po("fixfactors") %>>%
+#     po("imputesample") %>>%
+#     po(lrn_rf) |>
+#     as_learner() -> lrn_encode_over_rf
+# lrn_encode_over_rf$predict_sets <- c("train", "test")
 
-po_encode %>>%
-    po_over %>>%
-    po("imputeoor") %>>%
-    po("fixfactors") %>>%
-    po("imputesample") %>>%
-    po(lrn_rf) |>
-    as_learner() -> lrn_encode_over_rf
-lrn_encode_over_rf$predict_sets <- c("train", "test")
-
-po_tgtencode %>>%
-    po_over %>>%
-    po("imputeoor") %>>%
-    po("fixfactors") %>>%
-    po("imputesample") %>>%
-    po(lrn_rf) |>
-    as_learner() -> lrn_tgtencode_over_rf
-lrn_tgtencode_over_rf$predict_sets <- c("train", "test")
+# po_tgtencode %>>%
+#     po_over %>>%
+#     po("imputeoor") %>>%
+#     po("fixfactors") %>>%
+#     po("imputesample") %>>%
+#     po(lrn_rf) |>
+#     as_learner() -> lrn_tgtencode_over_rf
+# lrn_tgtencode_over_rf$predict_sets <- c("train", "test")
 
 # po_pca_temperature %>>%
 #     po_encode %>>%

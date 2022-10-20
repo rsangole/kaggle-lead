@@ -10,7 +10,7 @@ services:
     volumes:
       - type: "bind"
         source: "$GITHUBCOM_PATH/kaggle-lead"
-        target: "/home/"
+        target: "/home/rstudio"
       - type: "bind"
         source: $LOCAL_RENV_CACHE
         target: "/renv/cache"
