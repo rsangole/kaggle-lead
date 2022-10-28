@@ -35,69 +35,101 @@ feat_train_test_split <- function(dat,
 }
 
 #' @export
-feat_removeNA_add_lags <- function(dat,
-                                   moving_avg_periods = c(24, 24 * 3),
-                                   lags = c(1, 14),
-                                   diffs = c(1, 2)) {
-        dat |>
-                dplyr::mutate(
-                        meter_reading_missing = is.na(meter_reading)
-                ) |>
-                dplyr::group_by(building_id, site_id) |>
-                timetk::tk_augment_slidify(
-                        .value = meter_reading,
-                        .period = moving_avg_periods,
-                        # align = "right",
-                        .f = mean,
-                        .partial = TRUE
-                ) |>
-                timetk::tk_augment_lags(
-                        .value = "meter_reading",
-                        .lags = lags
-                ) |>
-                timetk::tk_augment_differences(
-                        .value = "meter_reading",
-                        .lags = 1,
-                        .differences = diffs
-                ) |>
-                dplyr::filter(!meter_reading_missing) |>
-                dplyr::select(-meter_reading_missing) |>
-                dplyr::ungroup() |>
-                data.table::as.data.table()
+feat_add_lags <- function(dat,
+                          moving_avg_periods = c(24, 24 * 3),
+                          lags = c(1, 24, 24*7),
+                          diffs = c(1, 2)) {
+  
+    cli::cli_inform("Setting key to {.code timestamp}")
+    setkey(dat, timestamp)
+    
+    cli::cli_inform("Adding {.code lead}, {.code lag}, {.code diff}, and {.code sliding-mean} values")
+    
+    out <- list()
+    for (.bldg in unique(dat$building_id)) {
+      x <- dat |>
+        dplyr::as_tibble() |> 
+        dplyr::filter(building_id == .bldg) |>
+        timetk::tk_augment_slidify(
+          .value = meter_reading,
+          .period = moving_avg_periods,
+          .f = mean,
+          .partial = TRUE
+        ) |>
+        timetk::tk_augment_lags(.value = "meter_reading",
+                                .lags = lags) |>
+        timetk::tk_augment_leads(.value = "meter_reading",
+                                 .lags = lags) |>
+        timetk::tk_augment_differences(.value = "meter_reading",
+                                       .lags = 1,
+                                       .differences = diffs) |>
+        data.table::as.data.table()
+      
+      y <- x[,.SD,.SDcols = patterns("meter_reading_")]
+      y <- as.list(y[, lapply(.SD, mean, na.rm = TRUE)])
+      
+      x[is.na(meter_reading_lag1), meter_reading_lag1 := y$meter_reading_lag1]
+      x[is.na(meter_reading_lag24), meter_reading_lag24 := y$meter_reading_lag24]
+      x[is.na(meter_reading_lag168), meter_reading_lag168 := y$meter_reading_lag168]      
+      x[is.na(meter_reading_lag1_diff1), meter_reading_lag1_diff1 := 0]
+      x[is.na(meter_reading_lag1_diff2), meter_reading_lag1_diff2 := 0]
+      
+      out[[.bldg]] <- x
+      
+    }
+    
+    data.table::rbindlist(out, use.names = TRUE)
+    
 }
 
 #' @export
-feat_replaceNA_add_lags <- function(dat,
-                                    moving_avg_periods = c(24, 24 * 3),
-                                    lags = c(1, 14),
-                                    diffs = c(1, 2)) {
-        dat |>
-                dplyr::group_by(building_id, site_id) |>
-                timetk::tk_augment_slidify(
-                        .value = meter_reading,
-                        .period = moving_avg_periods,
-                        # align = "right",
-                        .f = mean,
-                        .partial = TRUE
-                ) |>
-                timetk::tk_augment_lags(
-                        .value = "meter_reading",
-                        .lags = lags
-                ) |>
-                timetk::tk_augment_differences(
-                        .value = "meter_reading",
-                        .lags = 1,
-                        .differences = diffs
-                ) |>
-                dplyr::mutate(
-                        meter_reading_missing = is.na(meter_reading),
-                        meter_reading = dplyr::case_when(
-                                meter_reading_missing == TRUE ~ -99,
-                                TRUE ~ meter_reading
-                        )
-                ) |>
-                dplyr::ungroup() |>
-                data.table::as.data.table()
+calc_meter_reading_impute <- function(dat) {
+  cli::cli_inform("Calculating impute values")
+  dat[, .(impute_vals = median(meter_reading, na.rm = TRUE)), .(site_id)]
+  
+}
+
+#' @export
+feat_impute_missing_meter_reading <- function(dat, impute_vals) {
+  cli::cli_inform("Imputing missing meter-reading")
+  dat <-
+    data.table::merge.data.table(dat, impute_vals, by = c("site_id"))
+  dat[is.na(meter_reading), meter_reading := impute_vals]
+  dat[, impute_vals := NULL]
+  dat
+}
+
+#' @export
+calc_trimmed_sd_trainset <- function(dat) {
+  cli::cli_inform("Calculating trimmed std dev")
+  dat[, q5 := quantile(meter_reading, probs = 0.05, na.rm = TRUE), 
+      .(site_id)]
+  dat[, q95 := quantile(meter_reading, probs = 0.95, na.rm = TRUE), 
+      .(site_id)]
+  
+  dat[meter_reading > q5 &
+        meter_reading < q95, 
+      .(trimmed_sd_meter_reading = sd(meter_reading, na.rm = TRUE)), 
+      .(site_id)]
+}
+
+#' @export
+feat_add_trimmed_sd <- function(dat, trimmed_sd_dt) {
+  cli::cli_inform("Adding {.code trimmed std dev}")
+  dat <- data.table::merge.data.table(
+    dat,
+    trimmed_sd_dt,
+    by = c("site_id")
+  )
+  dat
+}
+
+#' @export
+feat_cleanup_primary_use <- function(dat) {
+  dat$primary_use <- as.factor(dat$primary_use)
+  levels(dat$primary_use) <- janitor::make_clean_names(levels(dat$primary_use))
+  dat$primary_use <- as.character(dat$primary_use)
+  dat
 }
 
 #' @export
@@ -120,6 +152,33 @@ feat_cleanup_categoricals <- function(dat) {
         dat
 }
 
-# pad_by_time(sdat, "timestamp") |>
-#         mutate(meter_reading = ts_impute_vec(meter_reading)) |>
-#         plot_stl_diagnostics(timestamp, meter_reading, .interactive = FALSE)
+#' @export
+feat_cleanup_vars <- function(dat){
+  dat[, cloud_coverage_missing := as.numeric(cloud_coverage == 255)]
+  dat[, year_built_missing := as.numeric(year_built == 255)]
+  # dat[, building_id := as.factor(building_id)]
+  dat[, label := as.factor(label)]
+  dat[, primary_use := as.factor(primary_use)]
+  dat[, site_id := as.factor(site_id)]
+  dat
+}
+
+#' @export
+drop_vars <- function(dat){
+  dat |> 
+    dplyr::select(
+      # zero variance vars
+      -year, 
+      -gte_meter,
+      # other vars
+      -building_weekday_hour,
+      -building_weekday,
+      -building_month,
+      -building_hour,
+      -building_meter,
+      -weekday_hour,
+      # high corr vars
+      -contains("_temperature_min"),
+      -contains("_temperature_max")
+    )
+}

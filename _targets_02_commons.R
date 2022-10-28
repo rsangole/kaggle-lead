@@ -1,90 +1,26 @@
 commmons <- list(
-  # Data Sets ----
-  tar_target(dat,
-             {
-               x <- open_dataset(outfile_train_test_features) |>
-                 dplyr::select(
-                   -"building_hour",
-                   -"building_meter",
-                   -"building_month",
-                   -"building_weekday",
-                   -"building_weekday_hour",
-                   -"weekday_hour",
-                   -"row_id",
-                   -"timestamp"
-                 ) |>
-                 dplyr::filter(label == "train",
-                               meter_reading_missing == FALSE) |>
-                 dplyr::collect() |>
-                 as.data.table()
-               x <- x[complete.cases(x)]
-               x[, cloud_coverage_missing := cloud_coverage == 255]
-               x[, year_built_missing := year_built == 255]
-               x[, building_id := as.factor(building_id)]
-               x[, label := as.factor(label)]
-               x[, primary_use := as.factor(primary_use)]
-               x[, site_id := as.factor(site_id)]
-               x
-             },
-             format = "fst_dt"),
-  
-  tar_target(
-    dat_bid_numeric,
-    dat |>
-      lazy_dt() |>
-      mutate(building_id = as.numeric(gsub(
-        "Bld-", "", building_id
-      )),
-      site_id = as.numeric(gsub("Site-", "", site_id))) |>
-      collect(),
-    format = "fst_dt"
-  ),
-  
   # Tasks ----
   tar_target(task_all_factors,
              {
-               tsk <- as_task_classif(dat,
+               tsk <- as_task_classif(cleaned_train_features,
                                        target = "anomaly",
                                        positive = "A1",
                                        id = "all_factors")
-               tsk$select(setdiff(tsk$feature_names, "label")) # dropping 'Label'
+               tsk$set_col_roles(
+                 c("label",
+                   "row_id",
+                   "timestamp",
+                   "building_id"),
+                 remove_from = "feature"
+               )
                tsk
              }),
-  tar_target(task_bid_numeric,
-             {
-               tsk <- as_task_classif(dat_bid_numeric,
-                                       target = "anomaly",
-                                       positive = "A1",
-                                       id = "bid_numeric")
-               tsk$select(setdiff(tsk$feature_names, "label")) # dropping 'Label'
-               tsk
-             }),
-  # * building_id removed, site_id as numeric
-  tar_target(task_no_bid,
-             {
-               tsk <- as_task_classif(dat_bid_numeric,
-                                       target = "anomaly",
-                                       positive = "A1",
-                                       id = "no_bid")
-               tsk$select(setdiff(tsk$feature_names, c("label", "building_id")))
-               tsk
-             }),
-  # * building_id removed, site_id as categorical
-  tar_target(task_no_bid_site_cat,
-             {
-               tsk <- as_task_classif(dat,
-                                      target = "anomaly",
-                                      positive = "A1",
-                                      id = "no_bid_site_cat")
-               tsk$select(setdiff(tsk$feature_names, c("label", "building_id")))
-               tsk
-             }),
+  
   # Resampling ----
-  tar_target(cv3,
-             {
-               cv3 <- rsmp("cv", folds = 3)
-               cv3$instantiate(task_all_factors)
-             }),
+  tar_target(cv3, rsmp("cv", folds = 3)),
+  tar_target(bootstrap, rsmp("bootstrap",
+                             repeats = 5)),
+  
   # Measures ----
   tar_target(measure,
              list(
@@ -98,21 +34,26 @@ commmons <- list(
                msr("time_both"),
                msr("classif.bacc")
              )),
-  # Pipeline Commons ----
-
+  
+  # Pipeline Operators ----
   # * Encode Factors
   tar_target(po_encode,
-             {
-               po_encode <- po("encode",
-                               method = "treatment",
-                               affect_columns = selector_type("factor"))
-               po_encode$train(list(task_all_factors))
-               po_encode
-             }), 
-  
+             po("encode",
+                method = "treatment",
+                affect_columns = selector_type("factor"))
+             ),
+             # {
+             #   po_encode <- po("encode",
+             #                   method = "treatment",
+             #                   affect_columns = selector_type("factor"))
+             #   po_encode$train(list(task_all_factors))
+             #   po_encode
+             # }), 
   # * One Hot Encoding
   tar_target(po_onehot,
-             po("encode", method = "one-hot")),
+             po("encode", 
+                id = "one_hot",
+                method = "one-hot")),
   
   # * Factor to Numeric
   tar_target(po_to_numeric,
@@ -141,34 +82,111 @@ commmons <- list(
       scale. = TRUE
     )
   ),
+  
   # * Target-Encoding
   tar_target(
     po_tgtencode,
     po("encodeimpact",
        affect_columns = selector_type("factor"))
   ),
+  
   # * undersample majority class
   tar_target(
-    po_under,
+    po_under_10pc_A0,
     po(
       "classbalancing",
-      id = "undersample",
+      id = "undersample_10pc_A0",
       adjust = "major",
       reference = "major",
-      shuffle = FALSE,
-      ratio = 1 / 50
+      ratio = 0.1 # keep 10% of A0 class
     )
   ),
-  # * oversample minority class
+  
+  # * undersample majority class
   tar_target(
-    po_over,
+    po_under_20pc_A0,
     po(
       "classbalancing",
-      id = "oversample",
+      id = "undersample_20pc_A0",
+      adjust = "major",
+      reference = "major",
+      ratio = 0.2
+    )
+  ),
+  
+  # * oversample minority class
+  tar_target(
+    po_over_10x_A1,
+    po(
+      "classbalancing",
+      id = "oversample_10x_A1",
       adjust = "minor",
       reference = "minor",
-      shuffle = FALSE,
       ratio = 10
     )
+  ),
+  
+  # * oversample minority class
+  tar_target(
+    po_over_50x_A1,
+    po(
+      "classbalancing",
+      id = "oversample_50x_A1",
+      adjust = "minor",
+      reference = "minor",
+      ratio = 50
+    )
+  ),
+  
+  # * balanced sampling
+  tar_target(
+    po_over_balance,
+    po(
+      "classbalancing",
+      id = "balanced_sampling",
+      adjust = "all",
+      reference = "all",
+      ratio = 1
+    )
+  ),
+  
+  # Pipelines ----
+  tar_target(
+    pipe_pca_ohot_over_10x_A1,
+    po_pca_temperature %>>%
+      po_onehot %>>%
+      po_over_10x_A1
+  ),
+  tar_target(
+    pipe_pca_ohot_over_50x_A1,
+    po_pca_temperature %>>%
+      po_onehot %>>%
+      po_over_50x_A1
+  ),
+  tar_target(
+    pipe_pca_ohot_balanced,
+    po_pca_temperature %>>%
+      po_onehot %>>%
+      po_over_balance
+  ),
+  tar_target(
+    pipe_pca_ohot_under_20pc_A0,
+    po_pca_temperature %>>%
+      po_onehot %>>%
+      po_under_20pc_A0
+  ),
+  tar_target(
+    pipe_pca_ohot_under_10pc_A0,
+    po_pca_temperature %>>%
+      po_onehot %>>%
+      po_under_10pc_A0
+  ),
+  tar_target(
+    pipe_pca_tgtencode_balanced,
+    po_pca_temperature %>>%
+      po_tgtencode %>>%
+      po_over_balance
   )
 )
+
+
