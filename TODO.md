@@ -1,0 +1,4 @@
+- [x] lead values in dataset
+- [x] remove highly correlated vars
+- [x] variance features
+- [ ] 

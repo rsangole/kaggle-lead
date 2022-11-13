@@ -18,7 +18,8 @@ tar_option_set(
     "mlr3pipelines",
     "plotly",
     "lattice",
-    "catboost"
+    "ggplot2",
+    "plotly"
   ),
   format = "qs"
 )
@@ -28,12 +29,14 @@ options(clustermq.scheduler = "multicore")
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source("./src/feat_data.R")
+tar_source("./src/plotters.R")
 
 source("_targets_01_data-preprocessor.R")
 source("_targets_02_commons.R")
+source("_targets_02b_analysis.R")
 source("_targets_03_xgb.R")
-source("_targets_04_rf.R")
-source("_targets_05_catboost.R")
+# source("_targets_04_rf.R")
+# source("_targets_05_catboost.R")
 
 list(
   # Inputs
@@ -43,8 +46,9 @@ list(
   ),
   # Tar Scripts
   data_preprocessor,
+  analysis,
   commmons,
-  xgb,
-  rf,
-  catboost
+  xgb
+  # rf,
+  # catboost
 )

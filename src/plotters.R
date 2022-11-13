@@ -76,3 +76,27 @@ plot_ts <- function(dat) {
                 ) |>
                 plotly::subplot(nrows = length(unique(dat$building_id)))
 }
+
+plot_benchmark_perf <- function(bmr_perf) {
+         dat <- bmr_perf |>
+                dplyr::select(
+                        task_id,
+                        learner_id,
+                        resampling_id,
+                        auc_train,
+                        auc_test,
+                        classif.ppv,
+                        classif.bacc
+                ) |>
+                tidyr::pivot_longer(-task_id:-resampling_id,
+                                    names_to = "metric") |> 
+                as.data.table()
+        p <- ggplot(aes(x = value,
+                   y = metric,
+                   color = learner_id),
+               data = dat) +
+                geom_point() +
+                facet_wrap(task_id ~ resampling_id) +
+                theme(legend.position = "top")
+        ggplotly(p)
+}
