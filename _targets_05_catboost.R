@@ -149,7 +149,7 @@ catboost <- list(
     dotplot(
       task_id ~ auc_test,
       groups = learner_id,
-      bmr_rf_perf,
+      bmr_catboost_perf,
       pch = 23,
       size = 3,
       auto.key = TRUE

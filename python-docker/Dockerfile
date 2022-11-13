@@ -1,0 +1,13 @@
+FROM jupyter/datascience-notebook:python-3.10
+
+LABEL maintainer="Rahul Sangole <rahul.sangole@gmail.com>"
+
+# Install Python 3 packages
+RUN pip install sktime \
+      xgboost \
+      catboost
+      
+RUN pip install lightgbm
+
+RUN git clone --recursive --branch stable --depth 1 https://github.com/Microsoft/LightGBM && \
+    cd LightGBM/python-package && python setup.py install

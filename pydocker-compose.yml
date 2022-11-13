@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  kaggle:
+    image: "$DOCKER_DEVELOPMENT_IMAGE"
+    ports:
+      - "8888:8888"
+    volumes:
+      - type: "bind"
+        source: "$GITHUBCOM_PATH/kaggle-lead-python"
+        target: "/home/jovyan/work"

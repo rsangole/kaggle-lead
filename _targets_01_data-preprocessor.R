@@ -7,7 +7,8 @@ data_preprocessor <- list(
         tar_target(
                 train_features,
                 read_csv_arrow(inputfile_train_features) |>
-                        as.data.table(),
+                  as.data.table() |>
+                  dplyr::arrange(timestamp),
                 format = "fst_dt"
         ),
         tar_target(
@@ -27,7 +28,8 @@ data_preprocessor <- list(
         tar_target(
                 test_features,
                 read_csv_arrow(inputfile_test_features) |>
-                        as.data.table(),
+                  as.data.table() |>
+                  dplyr::arrange(timestamp),
                 format = "fst_dt"
         ),
         tar_target(
@@ -35,23 +37,21 @@ data_preprocessor <- list(
                 test_features |>
                         feat_cleanup_primary_use() |>
                         feat_cleanup_categoricals() |>
-                        setkey(timestamp) |> 
                         feat_replaceNA_add_lags() |> 
-                        dplyr::mutate(label = "test") |> 
-                        dplyr::group_by(label, primary_use, site_id, building_id),
+                        dplyr::mutate(label = "test"),
                 format = "parquet"
         ),
         tar_target(
                 outfile_train_test_features,
                 {
                         path = here::here("data/arrow-stratifiedsampling/")
-                        cleaned_train_features |>
-                                bind_rows(cleaned_test_features) |> 
-                                dplyr::group_by(label, 
-                                                primary_use, 
-                                                site_id, 
-                                                building_id) |> 
-                                write_dataset(path = path, format = "parquet")
+                        bind_rows(cleaned_train_features,
+                                  cleaned_test_features) |>
+                          dplyr::group_by(label,
+                                          primary_use,
+                                          site_id,
+                                          building_id) |>
+                          write_dataset(path = path, format = "parquet")
                         path
                 }
         )
